@@ -8,58 +8,121 @@ import unicodedata
 
 NAME_MAP = {
     "mexico": "Mexico",
+    "africa do sul": "Africa do Sul",
     "south africa": "Africa do Sul",
+    "rsa": "Africa do Sul",
     "korea republic": "Coreia do Sul",
     "south korea": "Coreia do Sul",
+    "republic of korea": "Coreia do Sul",
+    "coreia do sul": "Coreia do Sul",
+    "kor": "Coreia do Sul",
     "czech republic": "Rep. Tcheca",
     "czechia": "Rep. Tcheca",
+    "republic tcheca": "Rep. Tcheca",
+    "cze": "Rep. Tcheca",
     "canada": "Canada",
+    "can": "Canada",
     "bosnia and herzegovina": "Bosnia",
+    "bosnia herzegovina": "Bosnia",
+    "bosnia": "Bosnia",
+    "bih": "Bosnia",
     "qatar": "Catar",
+    "qat": "Catar",
     "switzerland": "Suica",
+    "sui": "Suica",
     "brazil": "Brasil",
+    "brasil": "Brasil",
+    "bra": "Brasil",
     "morocco": "Marrocos",
+    "mar": "Marrocos",
     "haiti": "Haiti",
+    "hai": "Haiti",
     "scotland": "Escocia",
+    "sco": "Escocia",
     "united states": "EUA",
     "usa": "EUA",
+    "united states of america": "EUA",
+    "us": "EUA",
     "paraguay": "Paraguai",
+    "par": "Paraguai",
     "australia": "Australia",
+    "aus": "Australia",
     "turkey": "Turquia",
+    "turkiye": "Turquia",
+    "tur": "Turquia",
     "germany": "Alemanha",
+    "ger": "Alemanha",
     "curacao": "Curacao",
-    "cote d'ivoire": "Costa do Marfim",
+    "cur": "Curacao",
+    "cote divoire": "Costa do Marfim",
+    "cote d ivoire": "Costa do Marfim",
     "ivory coast": "Costa do Marfim",
+    "civ": "Costa do Marfim",
     "ecuador": "Equador",
+    "ecu": "Equador",
     "netherlands": "Holanda",
+    "ned": "Holanda",
+    "holland": "Holanda",
     "japan": "Japao",
+    "jpn": "Japao",
     "sweden": "Suecia",
+    "swe": "Suecia",
     "tunisia": "Tunisia",
+    "tun": "Tunisia",
     "belgium": "Belgica",
+    "bel": "Belgica",
     "egypt": "Egito",
+    "egy": "Egito",
     "iran": "Ira",
+    "ir iran": "Ira",
+    "irn": "Ira",
     "new zealand": "Nova Zelandia",
+    "nzl": "Nova Zelandia",
     "spain": "Espanha",
+    "esp": "Espanha",
     "cape verde": "Cabo Verde",
+    "cpv": "Cabo Verde",
     "saudi arabia": "Arabia Saudita",
+    "ksa": "Arabia Saudita",
+    "ksa": "Arabia Saudita",
     "uruguay": "Uruguai",
+    "uru": "Uruguai",
     "france": "Franca",
+    "fra": "Franca",
     "senegal": "Senegal",
+    "sen": "Senegal",
     "iraq": "Iraque",
+    "irq": "Iraque",
     "norway": "Noruega",
+    "nor": "Noruega",
     "argentina": "Argentina",
+    "arg": "Argentina",
     "algeria": "Argelia",
+    "alg": "Argelia",
+    "dza": "Argelia",
     "austria": "Austria",
+    "aut": "Austria",
     "jordan": "Jordania",
+    "jor": "Jordania",
     "portugal": "Portugal",
+    "por": "Portugal",
     "dr congo": "Congo",
+    "democratic republic of congo": "Congo",
+    "congo dr": "Congo",
     "congo": "Congo",
+    "cod": "Congo",
     "uzbekistan": "Uzbequistao",
+    "uzb": "Uzbequistao",
     "colombia": "Colombia",
+    "col": "Colombia",
     "england": "Inglaterra",
+    "eng": "Inglaterra",
     "croatia": "Croacia",
+    "cro": "Croacia",
     "ghana": "Gana",
+    "gha": "Gana",
     "panama": "Panama",
+    "pan": "Panama",
 }
 
 JOGOS = [
@@ -137,12 +200,25 @@ JOGOS = [
     {"t1": "Croacia", "t2": "Gana"},
 ]
 
+RESULTADOS_FIXOS = {
+    "0": [2, 0],
+    "1": [2, 1],
+    "6": [1, 1],
+    "18": [4, 1],
+}
+
 
 def normalize(name):
     s = unicodedata.normalize('NFD', name.lower())
     s = ''.join(c for c in s if unicodedata.category(c) != 'Mn')
     s = re.sub(r'[^a-z ]', '', s).strip()
-    return NAME_MAP.get(s, s)
+    mapped = NAME_MAP.get(s)
+    if mapped:
+        return mapped
+    for key, val in NAME_MAP.items():
+        if key in s or s in key:
+            return val
+    return s
 
 
 def find_jogo(t1, t2):
@@ -155,15 +231,16 @@ def find_jogo(t1, t2):
 
 
 def main():
-    results = {"0": [2, 0], "1": [2, 1]}
+    results = dict(RESULTADOS_FIXOS)
 
     key = os.environ.get("FOOTBALL_DATA_KEY", "")
     if key:
         try:
             url = "https://api.football-data.org/v4/competitions/WC/matches?status=FINISHED"
             req = urllib.request.Request(url, headers={"X-Auth-Token": key})
-            with urllib.request.urlopen(req, timeout=10) as r:
+            with urllib.request.urlopen(req, timeout=15) as r:
                 data = json.loads(r.read())
+                count = 0
                 for m in data.get("matches", []):
                     t1 = normalize(m.get("homeTeam", {}).get("name", ""))
                     t2 = normalize(m.get("awayTeam", {}).get("name", ""))
@@ -174,9 +251,13 @@ def main():
                     idx, inv = find_jogo(t1, t2)
                     if idx is not None:
                         results[str(idx)] = [g2, g1] if inv else [g1, g2]
-            print("API ok: " + str(len(results)) + " jogos")
+                        count = count + 1
+                        print("Jogo " + str(idx) + ": " + t1 + " x " + t2 + " = " + str(g1) + "x" + str(g2))
+                print("Total via API: " + str(count) + " jogos")
         except Exception as e:
             print("API erro: " + str(e))
+    else:
+        print("Sem chave API, usando apenas resultados fixos")
 
     os.makedirs("data", exist_ok=True)
     output = {
@@ -191,7 +272,7 @@ def main():
     }
     with open("data/results.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
-    print("results.json atualizado!")
+    print("results.json atualizado com " + str(len(results)) + " jogos!")
 
 
 if __name__ == "__main__":
