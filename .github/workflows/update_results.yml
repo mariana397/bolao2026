@@ -1,0 +1,28 @@
+name: Atualizar resultados Copa 2026
+
+on:
+  schedule:
+    - cron: '0 9 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Rodar script de resultados
+        env:
+          FOOTBALL_DATA_KEY: ${{ secrets.FOOTBALL_DATA_KEY }}
+        run: python scripts/fetch_results.py
+
+      - name: Commit e push do results.json
+        run: |
+          git config user.name "bolao-bot"
+          git config user.email "bot@bolao2026"
+          git add data/results.json
+          git diff --staged --quiet || git commit -m "Resultados atualizados $(date -u '+%d/%m %H:%M UTC')"
+          git push
