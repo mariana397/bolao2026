@@ -1,8 +1,3 @@
-bash
-
-cat /mnt/user-data/outputs/update_results.py
-Saída
-
 #!/usr/bin/env python3
 import json, re, urllib.request, os, datetime
 
