@@ -215,5 +215,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-Concluído
-O arquivo novo está certo e é
