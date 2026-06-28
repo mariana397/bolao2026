@@ -4,12 +4,12 @@ import json, re, urllib.request, os, datetime, unicodedata
 # Chaves sem acento (após normalização), valores com acento (para o dashboard)
 NAME_MAP = {
     "mexico": "México",
-    "south africa": "África do Sul", "africa do sul": "África do Sul",
+    "south africa": "África do Sul", "africa do sul": "África do Sul", "africa do south": "África do Sul",
     "korea republic": "Coreia do Sul", "south korea": "Coreia do Sul",
     "republic of korea": "Coreia do Sul",
     "czech republic": "Rep. Tcheca", "czechia": "Rep. Tcheca",
     "canada": "Canadá",
-    "bosnia and herzegovina": "Bósnia", "bosnia herzegovina": "Bósnia",
+    "bosnia and herzegovina": "Bósnia", "bosnia herzegovina": "Bósnia", "bosnia-herzegovina": "Bósnia",
     "qatar": "Catar",
     "switzerland": "Suíça",
     "brazil": "Brasil",
@@ -24,7 +24,7 @@ NAME_MAP = {
     "curacao": "Curaçao",
     "cote d ivoire": "Costa do Marfim", "ivory coast": "Costa do Marfim",
     "ecuador": "Equador",
-    "netherlands": "Países Baixos",
+    "netherlands": "Países Baixos", "paises baixos": "Países Baixos",
     "japan": "Japão",
     "sweden": "Suécia",
     "tunisia": "Tunísia",
@@ -33,7 +33,7 @@ NAME_MAP = {
     "iran": "Irã", "ir iran": "Irã",
     "new zealand": "Nova Zelândia",
     "spain": "Espanha",
-    "cape verde": "Cabo Verde",
+    "cape verde": "Cabo Verde", "cape verde islands": "Cabo Verde",
     "saudi arabia": "Arábia Saudita",
     "uruguay": "Uruguai",
     "france": "França",
@@ -54,7 +54,7 @@ NAME_MAP = {
     "ghana": "Gana",
     "panama": "Panamá",
     # nomes sem acento (para bater após normalização)
-    "africa do sul": "África do Sul",
+    "africa do sul": "África do Sul", "africa do south": "África do Sul",
     "coreia do sul": "Coreia do Sul",
     "rep tcheca": "Rep. Tcheca",
     "canada": "Canadá",
@@ -236,6 +236,7 @@ def main():
                         missed.append(f"GRUPO não encontrado: {t1} x {t2}")
 
                 elif stage in STAGE_MAP:
+                    print(f"  MATA-MATA {stage}: {t1} x {t2} = {g1}x{g2}")
                     fase_id = STAGE_MAP[stage]
                     jogos_fase = JOGOS_DEZESSEIS if fase_id == "dezesseis" else None
                     if jogos_fase:
