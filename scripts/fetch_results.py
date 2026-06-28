@@ -1,40 +1,100 @@
 #!/usr/bin/env python3
-import json, re, urllib.request, os, datetime
+import json, re, urllib.request, os, datetime, unicodedata
 
+# Chaves sem acento (após normalização), valores com acento (para o dashboard)
 NAME_MAP = {
-    "mexico":"México","south africa":"África do Sul","africa do sul":"África do Sul",
-    "korea republic":"Coreia do Sul","south korea":"Coreia do Sul",
-    "czech republic":"Rep. Tcheca","czechia":"Rep. Tcheca",
-    "canada":"Canadá","bosnia and herzegovina":"Bósnia","bosnia herzegovina":"Bósnia",
-    "qatar":"Catar","switzerland":"Suíça",
-    "brazil":"Brasil","morocco":"Marrocos",
-    "haiti":"Haiti","scotland":"Escócia",
-    "united states":"EUA","usa":"EUA",
-    "paraguay":"Paraguai","australia":"Austrália",
-    "turkey":"Turquia","turkiye":"Turquia","germany":"Alemanha",
-    "curacao":"Curaçao","cote d ivoire":"Costa do Marfim",
-    "ivory coast":"Costa do Marfim","ecuador":"Equador",
-    "netherlands":"Holanda","japan":"Japão",
-    "sweden":"Suécia","tunisia":"Tunísia",
-    "belgium":"Bélgica","egypt":"Egito",
-    "iran":"Irã","new zealand":"Nova Zelândia",
-    "spain":"Espanha","cape verde":"Cabo Verde",
-    "saudi arabia":"Arábia Saudita","uruguay":"Uruguai",
-    "france":"França","senegal":"Senegal",
-    "iraq":"Iraque","norway":"Noruega",
-    "argentina":"Argentina","algeria":"Argélia",
-    "austria":"Áustria","jordan":"Jordânia",
-    "portugal":"Portugal","dr congo":"RD Congo","congo dr":"RD Congo",
-    "congo":"RD Congo","democratic republic of congo":"RD Congo",
-    "uzbekistan":"Uzbequistão","colombia":"Colômbia",
-    "england":"Inglaterra","croatia":"Croácia",
-    "ghana":"Gana","panama":"Panamá",
-    "norway":"Noruega","sweden":"Suécia",
-    "countries baixos":"Países Baixos","netherlands":"Países Baixos",
-    "rd congo":"RD Congo",
+    "mexico": "México",
+    "south africa": "África do Sul", "africa do sul": "África do Sul",
+    "korea republic": "Coreia do Sul", "south korea": "Coreia do Sul",
+    "republic of korea": "Coreia do Sul",
+    "czech republic": "Rep. Tcheca", "czechia": "Rep. Tcheca",
+    "canada": "Canadá",
+    "bosnia and herzegovina": "Bósnia", "bosnia herzegovina": "Bósnia",
+    "qatar": "Catar",
+    "switzerland": "Suíça",
+    "brazil": "Brasil",
+    "morocco": "Marrocos",
+    "haiti": "Haiti",
+    "scotland": "Escócia",
+    "united states": "EUA", "usa": "EUA",
+    "paraguay": "Paraguai",
+    "australia": "Austrália",
+    "turkey": "Turquia", "turkiye": "Turquia",
+    "germany": "Alemanha",
+    "curacao": "Curaçao",
+    "cote d ivoire": "Costa do Marfim", "ivory coast": "Costa do Marfim",
+    "ecuador": "Equador",
+    "netherlands": "Países Baixos",
+    "japan": "Japão",
+    "sweden": "Suécia",
+    "tunisia": "Tunísia",
+    "belgium": "Bélgica",
+    "egypt": "Egito",
+    "iran": "Irã", "ir iran": "Irã",
+    "new zealand": "Nova Zelândia",
+    "spain": "Espanha",
+    "cape verde": "Cabo Verde",
+    "saudi arabia": "Arábia Saudita",
+    "uruguay": "Uruguai",
+    "france": "França",
+    "senegal": "Senegal",
+    "iraq": "Iraque",
+    "norway": "Noruega",
+    "argentina": "Argentina",
+    "algeria": "Argélia",
+    "austria": "Áustria",
+    "jordan": "Jordânia",
+    "portugal": "Portugal",
+    "dr congo": "RD Congo", "congo dr": "RD Congo",
+    "democratic republic of congo": "RD Congo", "congo": "RD Congo",
+    "uzbekistan": "Uzbequistão",
+    "colombia": "Colômbia",
+    "england": "Inglaterra",
+    "croatia": "Croácia",
+    "ghana": "Gana",
+    "panama": "Panamá",
+    # nomes sem acento (para bater após normalização)
+    "africa do sul": "África do Sul",
+    "coreia do sul": "Coreia do Sul",
+    "rep tcheca": "Rep. Tcheca",
+    "canada": "Canadá",
+    "bosnia": "Bósnia",
+    "catar": "Catar",
+    "suica": "Suíça",
+    "escocia": "Escócia",
+    "australia": "Austrália",
+    "turquia": "Turquia",
+    "curacao": "Curaçao",
+    "costa do marfim": "Costa do Marfim",
+    "equador": "Equador",
+    "holanda": "Holanda",
+    "japao": "Japão",
+    "suecia": "Suécia",
+    "tunisia": "Tunísia",
+    "belgica": "Bélgica",
+    "ira": "Irã",
+    "nova zelandia": "Nova Zelândia",
+    "espanha": "Espanha",
+    "cabo verde": "Cabo Verde",
+    "arabia saudita": "Arábia Saudita",
+    "uruguai": "Uruguai",
+    "franca": "França",
+    "iraque": "Iraque",
+    "noruega": "Noruega",
+    "argelia": "Argélia",
+    "austria": "Áustria",
+    "jordania": "Jordânia",
+    "rd congo": "RD Congo",
+    "uzbequistao": "Uzbequistão",
+    "colombia": "Colômbia",
+    "croacia": "Croácia",
+    "gana": "Gana",
+    "panama": "Panamá",
+    "paises baixos": "Países Baixos",
+    "estados unidos": "Estados Unidos",
+    "united states of america": "Estados Unidos",
 }
 
-# Jogos fase de grupos (72) — índice 0-71
 JOGOS_GRUPOS = [
     {"t1":"México","t2":"África do Sul"},{"t1":"Coreia do Sul","t2":"Rep. Tcheca"},
     {"t1":"Rep. Tcheca","t2":"África do Sul"},{"t1":"México","t2":"Coreia do Sul"},
@@ -74,7 +134,6 @@ JOGOS_GRUPOS = [
     {"t1":"Panamá","t2":"Inglaterra"},{"t1":"Croácia","t2":"Gana"},
 ]
 
-# Jogos 1/16 avos — na ordem do chaveamento (índice 0-15)
 JOGOS_DEZESSEIS = [
     {"t1":"África do Sul","t2":"Canadá"},
     {"t1":"Brasil","t2":"Japão"},
@@ -94,7 +153,6 @@ JOGOS_DEZESSEIS = [
     {"t1":"Colômbia","t2":"Gana"},
 ]
 
-# Mapeamento de stage da API para fase do bolão
 STAGE_MAP = {
     "ROUND_OF_16": "dezesseis",
     "QUARTER_FINALS": "oitavas",
@@ -103,22 +161,32 @@ STAGE_MAP = {
     "FINAL": "final",
 }
 
-import unicodedata
-
 def normalize(name):
     s = unicodedata.normalize('NFD', name.lower())
     s = ''.join(c for c in s if unicodedata.category(c) != 'Mn')
     s = re.sub(r'[^a-z ]', '', s).strip()
-    return NAME_MAP.get(s, name.title())
+    return NAME_MAP.get(s, name)
 
 def find_in_list(jogos, t1, t2):
+    # busca direta
     for idx, j in enumerate(jogos):
         if j["t1"] == t1 and j["t2"] == t2: return idx, False
         if j["t1"] == t2 and j["t2"] == t1: return idx, True
+    # busca normalizada (fallback)
+    t1n = unicodedata.normalize('NFD', t1.lower())
+    t1n = ''.join(c for c in t1n if unicodedata.category(c) != 'Mn')
+    t2n = unicodedata.normalize('NFD', t2.lower())
+    t2n = ''.join(c for c in t2n if unicodedata.category(c) != 'Mn')
+    for idx, j in enumerate(jogos):
+        j1n = unicodedata.normalize('NFD', j["t1"].lower())
+        j1n = ''.join(c for c in j1n if unicodedata.category(c) != 'Mn')
+        j2n = unicodedata.normalize('NFD', j["t2"].lower())
+        j2n = ''.join(c for c in j2n if unicodedata.category(c) != 'Mn')
+        if j1n == t1n and j2n == t2n: return idx, False
+        if j1n == t2n and j2n == t1n: return idx, True
     return None, None
 
 def main():
-    # Carrega results.json existente para preservar o que já foi salvo
     os.makedirs("data", exist_ok=True)
     existing = {}
     try:
@@ -127,7 +195,6 @@ def main():
     except Exception:
         pass
 
-    # Estrutura base preservando dados existentes
     results = {
         "fase1":     existing.get("fase1", {}),
         "dezesseis": existing.get("dezesseis", {}),
@@ -139,7 +206,9 @@ def main():
     }
 
     key = os.environ.get("FOOTBALL_DATA_KEY", "")
-    if key:
+    if not key:
+        print("Sem chave de API — mantendo dados existentes")
+    else:
         try:
             url = "https://api.football-data.org/v4/competitions/WC/matches?status=FINISHED"
             req = urllib.request.Request(url, headers={"X-Auth-Token": key})
@@ -147,59 +216,48 @@ def main():
                 data = json.loads(r.read())
 
             count = 0
+            missed = []
             for m in data.get("matches", []):
                 stage = m.get("stage", "")
-                t1_raw = m.get("homeTeam", {}).get("name", "")
-                t2_raw = m.get("awayTeam", {}).get("name", "")
-                t1 = normalize(t1_raw)
-                t2 = normalize(t2_raw)
-
-                score = m.get("score", {})
-                ft = score.get("fullTime", {})
+                t1 = normalize(m.get("homeTeam", {}).get("name", ""))
+                t2 = normalize(m.get("awayTeam", {}).get("name", ""))
+                ft = m.get("score", {}).get("fullTime", {})
                 g1 = ft.get("home")
                 g2 = ft.get("away")
                 if g1 is None or g2 is None:
                     continue
 
-                # Para mata-mata: usar placar do tempo normal + prorrogação (fullTime da API já inclui ET)
-                # Penáltis ficam em score.penalties — ignoramos para pontuação
-
                 if stage == "GROUP_STAGE":
                     idx, inv = find_in_list(JOGOS_GRUPOS, t1, t2)
                     if idx is not None:
-                        results["fase1"][str(idx)] = [g2, g1] if inv else [g1, g2]
+                        results["fase1"][str(idx)] = [g2,g1] if inv else [g1,g2]
                         count += 1
+                    else:
+                        missed.append(f"GRUPO não encontrado: {t1} x {t2}")
 
                 elif stage in STAGE_MAP:
                     fase_id = STAGE_MAP[stage]
                     jogos_fase = JOGOS_DEZESSEIS if fase_id == "dezesseis" else None
-                    # Para oitavas em diante, a API retorna os times reais;
-                    # buscamos na lista da fase correspondente se disponível
                     if jogos_fase:
                         idx, inv = find_in_list(jogos_fase, t1, t2)
                         if idx is not None:
-                            results[fase_id][str(idx)] = [g2, g1] if inv else [g1, g2]
+                            results[fase_id][str(idx)] = [g2,g1] if inv else [g1,g2]
                             count += 1
+                            print(f"  {fase_id}[{idx}]: {t1} x {t2} = {g1}x{g2}")
+                        else:
+                            missed.append(f"{fase_id} não encontrado: {t1} x {t2}")
                     else:
-                        # Para quartas, semi, terceiro, final: não temos lista fixa ainda
-                        # (times dependem do chaveamento dinâmico)
-                        # Guardamos por ordem de jogo da fase conforme a API retorna
-                        fase_jogos = results.get(fase_id, {})
-                        # Usa o matchday ou id como chave temporária
-                        match_id = str(m.get("id", ""))
-                        fase_jogos[match_id] = {
-                            "t1": t1, "t2": t2,
-                            "g1": g1 if not inv else g2,
-                            "g2": g2 if not inv else g1
-                        }
-                        results[fase_id] = fase_jogos
+                        # quartas/semi/final: guarda por match_id
+                        match_id = str(m.get("id",""))
+                        results[fase_id][match_id] = {"t1":t1,"t2":t2,"g1":g1,"g2":g2}
                         count += 1
 
             print(f"API ok: {count} jogos atualizados")
+            for miss in missed:
+                print(f"  MISS: {miss}")
+
         except Exception as e:
             print(f"API erro: {e}")
-    else:
-        print("Sem chave de API — mantendo dados existentes")
 
     with open("data/results.json", "w", encoding="utf-8") as f:
         json.dump({
