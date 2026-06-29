@@ -22,10 +22,10 @@ NAME_MAP = {
     "morocco": "Marrocos",
     "haiti": "Haiti",
     "scotland": "Escócia",
-    "united states": "Estados Unidos",
-    "united states of america": "Estados Unidos",
-    "usa": "Estados Unidos",
-    "eua": "EUA",
+    "united states": "EUA",
+    "united states of america": "EUA",
+    "usa": "EUA",
+    "estados unidos": "EUA",
     "paraguay": "Paraguai",
     "australia": "Austrália",
     "turkey": "Turquia",
@@ -35,8 +35,9 @@ NAME_MAP = {
     "cote d ivoire": "Costa do Marfim",
     "ivory coast": "Costa do Marfim",
     "ecuador": "Equador",
-    "netherlands": "Países Baixos",
-    "paises baixos": "Países Baixos",
+    "netherlands": "Holanda",
+    "paises baixos": "Holanda",
+    "holland": "Holanda",
     "japan": "Japão",
     "sweden": "Suécia",
     "tunisia": "Tunísia",
@@ -165,6 +166,11 @@ JOGOS_DEZESSEIS = [
     {"t1":"Colômbia","t2":"Gana"},
 ]
 
+MATA_MATA_NAME_FIX = {
+    "Holanda": "Países Baixos",
+    "EUA": "Estados Unidos",
+}
+
 STAGE_MAP = {
     "ROUND_OF_16": "dezesseis",
     "QUARTER_FINALS": "oitavas",
@@ -186,15 +192,12 @@ def find_in_list(jogos, t1, t2):
             return idx, False
         if j["t1"] == t2 and j["t2"] == t1:
             return idx, True
-    t1n = unicodedata.normalize('NFD', t1.lower())
-    t1n = ''.join(c for c in t1n if unicodedata.category(c) != 'Mn')
-    t2n = unicodedata.normalize('NFD', t2.lower())
-    t2n = ''.join(c for c in t2n if unicodedata.category(c) != 'Mn')
+    def sem_acento(s):
+        s = unicodedata.normalize('NFD', s.lower())
+        return ''.join(c for c in s if unicodedata.category(c) != 'Mn')
+    t1n, t2n = sem_acento(t1), sem_acento(t2)
     for idx, j in enumerate(jogos):
-        j1n = unicodedata.normalize('NFD', j["t1"].lower())
-        j1n = ''.join(c for c in j1n if unicodedata.category(c) != 'Mn')
-        j2n = unicodedata.normalize('NFD', j["t2"].lower())
-        j2n = ''.join(c for c in j2n if unicodedata.category(c) != 'Mn')
+        j1n, j2n = sem_acento(j["t1"]), sem_acento(j["t2"])
         if j1n == t1n and j2n == t2n:
             return idx, False
         if j1n == t2n and j2n == t1n:
@@ -254,7 +257,9 @@ def main():
                     fase_id = STAGE_MAP[stage]
                     print("  MATA-MATA " + stage + ": " + t1 + " x " + t2 + " = " + str(g1) + "x" + str(g2))
                     if fase_id == "dezesseis":
-                        idx, inv = find_in_list(JOGOS_DEZESSEIS, t1, t2)
+                        t1m = MATA_MATA_NAME_FIX.get(t1, t1)
+                        t2m = MATA_MATA_NAME_FIX.get(t2, t2)
+                        idx, inv = find_in_list(JOGOS_DEZESSEIS, t1m, t2m)
                         if idx is not None:
                             results[fase_id][str(idx)] = [g2, g1] if inv else [g1, g2]
                             count += 1
