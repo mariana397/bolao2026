@@ -290,7 +290,7 @@
         3
       ]
     },
-    "dezesseis": {},
+    "dezesseis": "dezesseis": {"0": [0, 1]},
     "oitavas": {},
     "quartas": {},
     "semi": {},
