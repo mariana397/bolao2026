@@ -166,6 +166,8 @@ JOGOS_DEZESSEIS = [
     {"t1":"Colômbia","t2":"Gana"},
 ]
 
+# Mapeamento adicional para nomes nos jogos do mata-mata
+# (podem diferir dos grupos — ex: "Holanda" nos grupos vs "Países Baixos" no mata-mata)
 MATA_MATA_NAME_FIX = {
     "Holanda": "Países Baixos",
     "EUA": "Estados Unidos",
@@ -173,6 +175,7 @@ MATA_MATA_NAME_FIX = {
 
 STAGE_MAP = {
     "ROUND_OF_16": "dezesseis",
+    "ROUND_OF_32": "dezesseis",
     "QUARTER_FINALS": "oitavas",
     "SEMI_FINALS": "semi",
     "THIRD_PLACE": "terceiro",
@@ -187,11 +190,13 @@ def normalize(name):
     return NAME_MAP.get(s, name)
 
 def find_in_list(jogos, t1, t2):
+    # busca direta
     for idx, j in enumerate(jogos):
         if j["t1"] == t1 and j["t2"] == t2:
             return idx, False
         if j["t1"] == t2 and j["t2"] == t1:
             return idx, True
+    # busca sem acento (fallback)
     def sem_acento(s):
         s = unicodedata.normalize('NFD', s.lower())
         return ''.join(c for c in s if unicodedata.category(c) != 'Mn')
@@ -235,8 +240,10 @@ def main():
 
             count = 0
             missed = []
+            stages_vistos = set()
             for m in data.get("matches", []):
                 stage = m.get("stage", "")
+                stages_vistos.add(stage)
                 t1 = normalize(m.get("homeTeam", {}).get("name", ""))
                 t2 = normalize(m.get("awayTeam", {}).get("name", ""))
                 ft = m.get("score", {}).get("fullTime", {})
@@ -257,6 +264,7 @@ def main():
                     fase_id = STAGE_MAP[stage]
                     print("  MATA-MATA " + stage + ": " + t1 + " x " + t2 + " = " + str(g1) + "x" + str(g2))
                     if fase_id == "dezesseis":
+                        # aplica fix de nomes para o mata-mata
                         t1m = MATA_MATA_NAME_FIX.get(t1, t1)
                         t2m = MATA_MATA_NAME_FIX.get(t2, t2)
                         idx, inv = find_in_list(JOGOS_DEZESSEIS, t1m, t2m)
@@ -271,6 +279,7 @@ def main():
                         count += 1
 
             print("API ok: " + str(count) + " jogos atualizados")
+            print("  STAGES vistos na API: " + ", ".join(sorted(stages_vistos)))
             for miss in missed:
                 print("  MISS: " + miss)
 
