@@ -174,10 +174,14 @@ MATA_MATA_NAME_FIX = {
 }
 
 STAGE_MAP = {
-    "ROUND_OF_16": "dezesseis",
+    "LAST_32": "dezesseis",
     "ROUND_OF_32": "dezesseis",
-    "QUARTER_FINALS": "oitavas",
+    "ROUND_OF_16": "oitavas",
+    "LAST_16": "oitavas",
+    "QUARTER_FINALS": "quartas",
+    "LAST_8": "quartas",
     "SEMI_FINALS": "semi",
+    "LAST_4": "semi",
     "THIRD_PLACE": "terceiro",
     "FINAL": "final",
 }
