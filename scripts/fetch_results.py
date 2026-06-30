@@ -250,9 +250,18 @@ def main():
                 stages_vistos.add(stage)
                 t1 = normalize(m.get("homeTeam", {}).get("name", ""))
                 t2 = normalize(m.get("awayTeam", {}).get("name", ""))
-                ft = m.get("score", {}).get("fullTime", {})
-                g1 = ft.get("home")
-                g2 = ft.get("away")
+                score = m.get("score", {})
+                # Para jogos do mata-mata: usar regularTime (90 min) se existir,
+                # pois fullTime as vezes inclui penaltis somados ao placar.
+                # Para fase de grupos: regularTime nao existe, usar fullTime normalmente.
+                reg = score.get("regularTime", {})
+                if reg.get("home") is not None and reg.get("away") is not None:
+                    g1 = reg.get("home")
+                    g2 = reg.get("away")
+                else:
+                    ft = score.get("fullTime", {})
+                    g1 = ft.get("home")
+                    g2 = ft.get("away")
                 if g1 is None or g2 is None:
                     continue
 
