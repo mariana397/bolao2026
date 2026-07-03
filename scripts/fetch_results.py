@@ -251,14 +251,24 @@ def main():
                 t1 = normalize(m.get("homeTeam", {}).get("name", ""))
                 t2 = normalize(m.get("awayTeam", {}).get("name", ""))
                 score = m.get("score", {})
-                # Para jogos do mata-mata: usar regularTime (90 min) se existir,
-                # pois fullTime as vezes inclui penaltis somados ao placar.
-                # Para fase de grupos: regularTime nao existe, usar fullTime normalmente.
-                reg = score.get("regularTime", {})
-                if reg.get("home") is not None and reg.get("away") is not None:
-                    g1 = reg.get("home")
-                    g2 = reg.get("away")
+                duration = score.get("duration", "REGULAR")
+                if duration == "PENALTY_SHOOTOUT":
+                    # Jogo foi a penaltis: regularTime + extraTime = placar correto
+                    reg = score.get("regularTime", {})
+                    ext = score.get("extraTime", {})
+                    r1 = reg.get("home", 0) or 0
+                    r2 = reg.get("away", 0) or 0
+                    e1 = ext.get("home", 0) or 0
+                    e2 = ext.get("away", 0) or 0
+                    g1 = r1 + e1
+                    g2 = r2 + e2
+                elif duration == "EXTRA_TIME":
+                    # Jogo foi a prorrogacao mas nao a penaltis: fullTime ja e correto
+                    ft = score.get("fullTime", {})
+                    g1 = ft.get("home")
+                    g2 = ft.get("away")
                 else:
+                    # Jogo terminou no tempo normal: fullTime e correto
                     ft = score.get("fullTime", {})
                     g1 = ft.get("home")
                     g2 = ft.get("away")
