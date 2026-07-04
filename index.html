@@ -135,7 +135,6 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 <script>
 const PARTICIPANTES = ['Claudia','Roberta','Pati','Caru','Mari','Mãe'];
 
-// Fases com pesos e total de jogos
 const FASES = [
   {id:'fase1',    label:'Grupos',   peso:1, penalti:false},
   {id:'dezesseis',label:'1/16',     peso:2, penalti:true},
@@ -146,7 +145,6 @@ const FASES = [
   {id:'final',    label:'Final',    peso:5, penalti:true},
 ];
 
-// ─── JOGOS FASE DE GRUPOS (72) ───────────────────────────────────────────────
 const JOGOS_GRUPOS = [
   {g:'A',t1:'México',t2:'África do Sul'},{g:'A',t1:'Coreia do Sul',t2:'Rep. Tcheca'},
   {g:'A',t1:'Rep. Tcheca',t2:'África do Sul'},{g:'A',t1:'México',t2:'Coreia do Sul'},
@@ -186,176 +184,112 @@ const JOGOS_GRUPOS = [
   {g:'L',t1:'Panamá',t2:'Inglaterra'},{g:'L',t1:'Croácia',t2:'Gana'},
 ];
 
-// ─── CHAVEAMENTO MATA-MATA ────────────────────────────────────────────────────
-// Cada jogo tem: source1 e source2 descrevendo de onde vem cada time
-// Quando o resultado da fase anterior existir, preenchemos automaticamente
-
-// 1/16 avos — 16 jogos (chaveamento do PDF)
-// Times reais já classificados
-const JOGOS_DEZESSEIS_BASE = [
-  // lado esquerdo do chaveamento (jogos 1-8)
-  {j:0,  src1:'1ºE',      src2:'3º(A/B/C/D/F)', data:'29/6 17h30 Foxborough'},
-  {j:1,  src1:'1ºI',      src2:'3º(C/D/F/G/H)', data:'30/6 18h East Rutherford'},
-  {j:2,  src1:'2ºA',      src2:'2ºB',            data:'28/6 16h Inglewood'},
-  {j:3,  src1:'1ºF',      src2:'2ºC',            data:'29/6 22h Monterrey'},
-  {j:4,  src1:'2ºK',      src2:'2ºL',            data:'2/7 20h Toronto'},
-  {j:5,  src1:'1ºH',      src2:'2ºJ',            data:'2/7 16h Inglewood'},
-  {j:6,  src1:'1ºD',      src2:'3º(B/E/F/I/J)',  data:'1/7 21h Santa Clara'},
-  {j:7,  src1:'1ºG',      src2:'3º(A/E/H/I/J)',  data:'1/7 17h Seattle'},
-  // lado direito (jogos 9-16)
-  {j:8,  src1:'1ºC',      src2:'3º(E/F/H/I/J)', data:'29/6 14h Houston'},
-  {j:9,  src1:'1ºA',      src2:'3º(C/E/F/H/I)', data:'30/6 22h Cidade do México'},
-  {j:10, src1:'1ºL',      src2:'3º(E/H/I/J/K)', data:'1/7 13h Atlanta'},
-  {j:11, src1:'1ºJ',      src2:'2ºH',            data:'3/7 19h Miami'},
-  {j:12, src1:'2ºD',      src2:'2ºG',            data:'3/7 15h Dallas'},
-  {j:13, src1:'1ºB',      src2:'3º(E/F/G/I/J)', data:'3/7 0h Vancouver'},
-  {j:14, src1:'1ºK',      src2:'3º(D/E/I/J/L)', data:'3/7 22h30 Kansas City'},
-  {j:15, src1:'2ºE',      src2:'2ºI',            data:'30/6 14h Dallas'},
+const JOGOS_DEZESSEIS = [
+  {t1:'África do Sul',t2:'Canadá',data:'28/6 16h Inglewood'},
+  {t1:'Brasil',t2:'Japão',data:'29/6 14h Houston'},
+  {t1:'Alemanha',t2:'Paraguai',data:'29/6 17h30 Foxborough'},
+  {t1:'Países Baixos',t2:'Marrocos',data:'29/6 22h Monterrey'},
+  {t1:'Costa do Marfim',t2:'Noruega',data:'30/6 14h Dallas'},
+  {t1:'França',t2:'Suécia',data:'30/6 18h East Rutherford'},
+  {t1:'México',t2:'Equador',data:'30/6 22h Cidade do México'},
+  {t1:'Inglaterra',t2:'RD Congo',data:'1/7 13h Atlanta'},
+  {t1:'Bélgica',t2:'Senegal',data:'1/7 17h East Rutherford'},
+  {t1:'Estados Unidos',t2:'Bósnia',data:'1/7 21h Santa Clara'},
+  {t1:'Espanha',t2:'Áustria',data:'2/7 16h Inglewood'},
+  {t1:'Portugal',t2:'Croácia',data:'2/7 20h Toronto'},
+  {t1:'Suíça',t2:'Argélia',data:'3/7 0h Vancouver'},
+  {t1:'Austrália',t2:'Egito',data:'3/7 15h Dallas'},
+  {t1:'Argentina',t2:'Cabo Verde',data:'3/7 19h Miami'},
+  {t1:'Colômbia',t2:'Gana',data:'3/7 22h30 Kansas City'},
 ];
 
-// Times reais já classificados (preenchidos com base nos resultados reais)
-// O dashboard resolve automaticamente quando inserimos os resultados dos grupos
-// Por ora, usamos os times que você já mapeou
-const TIMES_DEZESSEIS = [
-  {t1:'África do Sul', t2:'Canadá'},       // j0: 2ºA × 2ºB
-  {t1:'Brasil',        t2:'Japão'},         // j1: 1ºC × ...
-  {t1:'Alemanha',      t2:'Paraguai'},      // j2
-  {t1:'Países Baixos', t2:'Marrocos'},      // j3
-  {t1:'Costa do Marfim',t2:'Noruega'},      // j4
-  {t1:'França',        t2:'Suécia'},        // j5
-  {t1:'México',        t2:'Equador'},       // j6
-  {t1:'Inglaterra',    t2:'RD Congo'},      // j7
-  {t1:'Bélgica',       t2:'Senegal'},       // j8
-  {t1:'Estados Unidos',t2:'Bósnia'},        // j9
-  {t1:'Espanha',       t2:'Áustria'},       // j10
-  {t1:'Portugal',      t2:'Croácia'},       // j11
-  {t1:'Suíça',         t2:'Argélia'},       // j12
-  {t1:'Austrália',     t2:'Egito'},         // j13
-  {t1:'Argentina',     t2:'Cabo Verde'},    // j14
-  {t1:'Colômbia',      t2:'Gana'},          // j15
+// Oitavas — times reais confirmados
+const JOGOS_OITAVAS = [
+  {t1:'Canadá',t2:'Marrocos',data:'4/7 14h Houston'},
+  {t1:'Paraguai',t2:'França',data:'4/7 18h Filadélfia'},
+  {t1:'Brasil',t2:'Noruega',data:'5/7 17h East Rutherford'},
+  {t1:'México',t2:'Inglaterra',data:'5/7 21h Cidade do México'},
+  {t1:'Portugal',t2:'Espanha',data:'6/7 16h Dallas'},
+  {t1:'Estados Unidos',t2:'Bélgica',data:'6/7 21h Seattle'},
+  {t1:'Argentina',t2:'Egito',data:'7/7 13h Atlanta'},
+  {t1:'Suíça',t2:'Colômbia',data:'7/7 17h Vancouver'},
 ];
 
-// Oitavas — 8 jogos, chaveamento do PDF
-// Vencedor de cada par de jogos do 1/16
-const CHAVAMENTO_OITAVAS = [
-  {src1:'V(j0)',  src2:'V(j1)',  data:'4/7 18h Filadélfia'},    // QF esq1
-  {src1:'V(j2)',  src2:'V(j3)',  data:'4/7 14h Houston'},       // QF esq2
-  {src1:'V(j4)',  src2:'V(j5)',  data:'6/7 16h Dallas'},        // QF esq3
-  {src1:'V(j6)',  src2:'V(j7)',  data:'6/7 21h Seattle'},       // QF esq4
-  {src1:'V(j8)',  src2:'V(j9)',  data:'5/7 17h East Rutherford'}, // QF dir1
-  {src1:'V(j10)', src2:'V(j11)', data:'5/7 21h Cidade do México'},// QF dir2
-  {src1:'V(j12)', src2:'V(j13)', data:'7/7 13h Atlanta'},       // QF dir3
-  {src1:'V(j14)', src2:'V(j15)', data:'7/7 17h Vancouver'},     // QF dir4
+const JOGOS_QUARTAS = [
+  {t1:'A definir',t2:'A definir',data:'9/7 17h Foxborough'},
+  {t1:'A definir',t2:'A definir',data:'10/7 16h Inglewood'},
+  {t1:'A definir',t2:'A definir',data:'11/7 18h Miami'},
+  {t1:'A definir',t2:'A definir',data:'11/7 22h Kansas City'},
 ];
+const JOGOS_SEMI = [
+  {t1:'A definir',t2:'A definir',data:'14/7 16h Dallas'},
+  {t1:'A definir',t2:'A definir',data:'15/7 16h Atlanta'},
+];
+const JOGOS_TERCEIRO = [{t1:'A definir',t2:'A definir',data:'18/7 18h Miami'}];
+const JOGOS_FINAL    = [{t1:'A definir',t2:'A definir',data:'19/7 16h East Rutherford'}];
 
-// Quartas — 4 jogos
-const CHAVAMENTO_QUARTAS = [
-  {src1:'V(o0)', src2:'V(o1)', data:'9/7 17h Foxborough'},
-  {src1:'V(o2)', src2:'V(o3)', data:'10/7 16h Inglewood'},
-  {src1:'V(o4)', src2:'V(o5)', data:'11/7 18h Miami'},
-  {src1:'V(o6)', src2:'V(o7)', data:'11/7 22h Kansas City'},
-];
-
-// Semi — 2 jogos
-const CHAVAMENTO_SEMI = [
-  {src1:'V(q0)', src2:'V(q1)', data:'14/7 16h Dallas'},
-  {src1:'V(q2)', src2:'V(q3)', data:'15/7 16h Atlanta'},
-];
-
-// 3º Lugar — 1 jogo
-const CHAVAMENTO_TERCEIRO = [
-  {src1:'P(s0)', src2:'P(s1)', data:'19/7 16h East Rutherford'},
-];
-
-// Final — 1 jogo
-const CHAVAMENTO_FINAL = [
-  {src1:'V(s0)', src2:'V(s1)', data:'19/7 18h Miami'},
-];
+function getJogosFase(id){
+  if(id==='fase1')    return JOGOS_GRUPOS;
+  if(id==='dezesseis')return JOGOS_DEZESSEIS;
+  if(id==='oitavas')  return JOGOS_OITAVAS;
+  if(id==='quartas')  return JOGOS_QUARTAS;
+  if(id==='semi')     return JOGOS_SEMI;
+  if(id==='terceiro') return JOGOS_TERCEIRO;
+  if(id==='final')    return JOGOS_FINAL;
+  return [];
+}
 
 // ─── PALPITES ────────────────────────────────────────────────────────────────
 const PALPITES_GRUPOS = {
-  Claudia:[
-    [1,2],[0,1],[1,2],[1,1],[2,0],[1,3],[2,0],[1,3],[2,0],[1,0],[2,1],[1,1],
-    [3,0],[1,4],[1,2],[4,0],[1,3],[2,0],[1,2],[1,2],[2,1],[1,1],[1,0],[2,2],
-    [3,0],[2,1],[2,2],[1,0],[2,2],[0,3],[2,2],[3,2],[3,2],[2,1],[3,2],[2,3],
-    [3,0],[2,1],[3,1],[2,1],[1,1],[1,3],[5,0],[2,2],[4,1],[2,0],[0,3],[1,4],
-    [4,2],[1,3],[1,4],[2,3],[2,3],[2,2],[3,0],[2,0],[3,2],[4,1],[2,1],[0,3],
-    [3,1],[2,2],[4,2],[3,2],[2,2],[0,2],[3,0],[2,0],[3,2],[1,3],[0,4],[2,2],
-  ],
-  Roberta:[
-    [2,1],[3,1],[1,2],[1,1],[4,1],[1,0],[1,0],[0,2],[1,0],[3,0],[1,1],[0,0],
-    [2,0],[0,2],[1,1],[4,0],[1,3],[2,0],[2,3],[1,2],[1,2],[0,2],[2,1],[3,1],
-    [4,0],[2,3],[3,2],[2,0],[1,3],[1,2],[2,1],[1,2],[2,0],[1,2],[2,0],[2,3],
-    [2,0],[0,0],[3,1],[1,0],[1,0],[0,3],[4,0],[0,3],[3,1],[4,0],[1,1],[1,1],
-    [5,0],[2,3],[3,1],[2,2],[2,2],[2,1],[5,0],[1,0],[3,1],[1,1],[1,2],[0,3],
-    [3,0],[1,3],[4,0],[3,1],[2,3],[1,1],[2,2],[1,1],[3,0],[2,4],[1,5],[3,1],
-  ],
-  Pati:[
-    [2,0],[2,1],[0,2],[1,1],[2,1],[2,0],[2,0],[0,2],[1,0],[1,0],[1,1],[0,0],
-    [2,0],[null,2],[1,1],[2,0],[1,1],[2,1],[1,1],[0,1],[0,2],[2,0],[0,1],[1,1],
-    [2,0],[1,2],[3,1],[2,0],[1,1],[1,2],[1,1],[2,0],[0,1],[2,1],[1,1],[0,2],
-    [0,1],[0,0],[1,1],[0,2],[1,0],[0,2],[2,0],[1,2],[1,1],[2,0],[0,1],[1,3],
-    [2,0],[0,1],[2,0],[null,3],[2,1],[null,1],[2,0],[1,1],[2,1],[0,1],[1,1],[0,2],
-    [2,1],[0,2],[3,0],[2,1],[1,2],[0,1],[1,1],[1,1],[2,1],[0,2],[1,3],[2,1],
-  ],
-  Caru:[
-    [1,2],[1,2],[0,2],[1,0],[2,2],[2,1],[1,2],[2,1],[0,2],[1,2],[2,2],[1,1],
-    [2,1],[1,0],[1,2],[2,1],[1,2],[2,1],[0,2],[1,2],[1,1],[1,3],[3,0],[1,0],
-    [2,0],[1,0],[2,1],[0,0],[0,2],[1,2],[2,1],[1,2],[2,0],[2,2],[2,2],[2,1],
-    [1,2],[2,0],[1,2],[1,2],[2,2],[1,2],[2,0],[1,2],[2,0],[1,2],[2,2],[1,2],
-    [1,2],[2,1],[1,2],[1,2],[2,2],[2,1],[2,1],[1,2],[2,0],[1,1],[2,1],[0,3],
-    [1,2],[2,1],[2,0],[2,2],[1,2],[2,1],[1,2],[2,1],[1,2],[1,2],[1,2],[2,2],
-  ],
-  Mari:[
-    [2,1],[1,1],[0,1],[2,0],[1,2],[1,1],[0,0],[0,1],[1,0],[1,0],[1,1],[1,2],
-    [2,0],[1,1],[1,2],[2,1],[0,1],[2,1],[1,2],[1,2],[2,2],[1,1],[1,2],[2,0],
-    [3,0],[1,2],[2,0],[2,0],[2,3],[1,2],[2,1],[2,1],[1,2],[1,1],[2,1],[0,1],
-    [2,1],[1,0],[1,0],[0,1],[1,2],[0,2],[3,0],[1,2],[2,1],[3,0],[0,1],[2,2],
-    [3,1],[1,2],[3,0],[1,2],[2,1],[2,0],[2,1],[0,1],[2,1],[0,1],[1,1],[0,2],
-    [2,1],[0,2],[2,0],[3,1],[1,2],[2,0],[1,1],[1,1],[2,0],[1,2],[2,2],[2,1],
-  ],
-  Mãe:[
-    [1,1],[2,1],[1,0],[2,1],[2,2],[1,0],[0,1],[2,1],[3,1],[1,1],[2,0],[1,1],
-    [2,1],[0,2],[1,2],[3,0],[1,3],[2,0],[2,2],[1,3],[2,2],[2,0],[2,1],[2,0],
-    [4,0],[2,2],[3,1],[3,1],[2,3],[2,4],[3,2],[1,3],[2,1],[2,1],[3,1],[2,2],
-    [2,1],[0,1],[3,1],[0,2],[2,0],[1,3],[4,0],[1,2],[2,0],[3,1],[1,1],[1,3],
-    [3,2],[2,1],[2,0],[2,2],[1,3],[2,1],[2,1],[1,0],[3,1],[1,3],[2,2],[0,2],
-    [3,0],[0,2],[3,1],[3,1],[1,3],[3,2],[2,0],[1,0],[3,1],[0,2],[1,3],[2,1],
-  ],
+  Claudia:[[1,2],[0,1],[1,2],[1,1],[2,0],[1,3],[2,0],[1,3],[2,0],[1,0],[2,1],[1,1],[3,0],[1,4],[1,2],[4,0],[1,3],[2,0],[1,2],[1,2],[2,1],[1,1],[1,0],[2,2],[3,0],[2,1],[2,2],[1,0],[2,2],[0,3],[2,2],[3,2],[3,2],[2,1],[3,2],[2,3],[3,0],[2,1],[3,1],[2,1],[1,1],[1,3],[5,0],[2,2],[4,1],[2,0],[0,3],[1,4],[4,2],[1,3],[1,4],[2,3],[2,3],[2,2],[3,0],[2,0],[3,2],[4,1],[2,1],[0,3],[3,1],[2,2],[4,2],[3,2],[2,2],[0,2],[3,0],[2,0],[3,2],[1,3],[0,4],[2,2]],
+  Roberta:[[2,1],[3,1],[1,2],[1,1],[4,1],[1,0],[1,0],[0,2],[1,0],[3,0],[1,1],[0,0],[2,0],[0,2],[1,1],[4,0],[1,3],[2,0],[2,3],[1,2],[1,2],[0,2],[2,1],[3,1],[4,0],[2,3],[3,2],[2,0],[1,3],[1,2],[2,1],[1,2],[2,0],[1,2],[2,0],[2,3],[2,0],[0,0],[3,1],[1,0],[1,0],[0,3],[4,0],[0,3],[3,1],[4,0],[1,1],[1,1],[5,0],[2,3],[3,1],[2,2],[2,2],[2,1],[5,0],[1,0],[3,1],[1,1],[1,2],[0,3],[3,0],[1,3],[4,0],[3,1],[2,3],[1,1],[2,2],[1,1],[3,0],[2,4],[1,5],[3,1]],
+  Pati:[[2,0],[2,1],[0,2],[1,1],[2,1],[2,0],[2,0],[0,2],[1,0],[1,0],[1,1],[0,0],[2,0],[null,2],[1,1],[2,0],[1,1],[2,1],[1,1],[0,1],[0,2],[2,0],[0,1],[1,1],[2,0],[1,2],[3,1],[2,0],[1,1],[1,2],[1,1],[2,0],[0,1],[2,1],[1,1],[0,2],[0,1],[0,0],[1,1],[0,2],[1,0],[0,2],[2,0],[1,2],[1,1],[2,0],[0,1],[1,3],[2,0],[0,1],[2,0],[null,3],[2,1],[null,1],[2,0],[1,1],[2,1],[0,1],[1,1],[0,2],[2,1],[0,2],[3,0],[2,1],[1,2],[0,1],[1,1],[1,1],[2,1],[0,2],[1,3],[2,1]],
+  Caru:[[1,2],[1,2],[0,2],[1,0],[2,2],[2,1],[1,2],[2,1],[0,2],[1,2],[2,2],[1,1],[2,1],[1,0],[1,2],[2,1],[1,2],[2,1],[0,2],[1,2],[1,1],[1,3],[3,0],[1,0],[2,0],[1,0],[2,1],[0,0],[0,2],[1,2],[2,1],[1,2],[2,0],[2,2],[2,2],[2,1],[1,2],[2,0],[1,2],[1,2],[2,2],[1,2],[2,0],[1,2],[2,0],[1,2],[2,2],[1,2],[1,2],[2,1],[1,2],[1,2],[2,2],[2,1],[2,1],[1,2],[2,0],[1,1],[2,1],[0,3],[1,2],[2,1],[2,0],[2,2],[1,2],[2,1],[1,2],[2,1],[1,2],[1,2],[1,2],[2,2]],
+  Mari:[[2,1],[1,1],[0,1],[2,0],[1,2],[1,1],[0,0],[0,1],[1,0],[1,0],[1,1],[1,2],[2,0],[1,1],[1,2],[2,1],[0,1],[2,1],[1,2],[1,2],[2,2],[1,1],[1,2],[2,0],[3,0],[1,2],[2,0],[2,0],[2,3],[1,2],[2,1],[2,1],[1,2],[1,1],[2,1],[0,1],[2,1],[1,0],[1,0],[0,1],[1,2],[0,2],[3,0],[1,2],[2,1],[3,0],[0,1],[2,2],[3,1],[1,2],[3,0],[1,2],[2,1],[2,0],[2,1],[0,1],[2,1],[0,1],[1,1],[0,2],[2,1],[0,2],[2,0],[3,1],[1,2],[2,0],[1,1],[1,1],[2,0],[1,2],[2,2],[2,1]],
+  Mãe:[[1,1],[2,1],[1,0],[2,1],[2,2],[1,0],[0,1],[2,1],[3,1],[1,1],[2,0],[1,1],[2,1],[0,2],[1,2],[3,0],[1,3],[2,0],[2,2],[1,3],[2,2],[2,0],[2,1],[2,0],[4,0],[2,2],[3,1],[3,1],[2,3],[2,4],[3,2],[1,3],[2,1],[2,1],[3,1],[2,2],[2,1],[0,1],[3,1],[0,2],[2,0],[1,3],[4,0],[1,2],[2,0],[3,1],[1,1],[1,3],[3,2],[2,1],[2,0],[2,2],[1,3],[2,1],[2,1],[1,0],[3,1],[1,3],[2,2],[0,2],[3,0],[0,2],[3,1],[3,1],[1,3],[3,2],[2,0],[1,0],[3,1],[0,2],[1,3],[2,1]],
 };
 
 const PALPITES_DEZESSEIS = {
-  Claudia: [[1,2],[2,1],[2,1],[3,2],[1,2],[3,1],[1,2],[2,0],[2,1],[3,0],[3,1],[1,2],[2,0],[2,1],[4,1],[2,3]],
-  Roberta: [[2,1],[3,1],[2,1],[3,1],[1,2],[3,0],[2,1],[2,0],[3,2],[2,0],[3,0],[2,1],[2,1],[2,0],[4,0],[2,1]],
-  Pati:    [[2,1],[3,1],[2,0],[1,1],[2,2],[2,0],[1,1],[2,0],[1,1],[1,0],[2,0],[1,2],[1,0],[2,2],[2,0],[2,1]],
-  Caru:    [[1,2],[2,1],[3,1],[1,2],[2,2],[3,1],[2,2],[1,2],[1,2],[2,2],[3,0],[2,1],[1,2],[1,2],[3,1],[1,2]],
-  Mari:    [[2,0],[2,1],[2,0],[1,1],[1,1],[3,0],[2,2],[2,2],[1,2],[3,1],[4,1],[1,1],[1,0],[0,2],[2,1],[2,2]],
-  Mãe:     [[1,2],[3,1],[2,0],[1,2],[2,3],[3,1],[2,0],[2,0],[1,2],[1,0],[3,2],[1,2],[1,2],[0,1],[3,1],[2,1]],
+  Claudia:[[1,2],[2,1],[2,1],[3,2],[1,2],[3,1],[1,2],[2,0],[2,1],[3,0],[3,1],[1,2],[2,0],[2,1],[4,1],[2,3]],
+  Roberta:[[2,1],[3,1],[2,1],[3,1],[1,2],[3,0],[2,1],[2,0],[3,2],[2,0],[3,0],[2,1],[2,1],[2,0],[4,0],[2,1]],
+  Pati:   [[2,1],[3,1],[2,0],[1,1],[2,2],[2,0],[1,1],[2,0],[1,1],[1,0],[2,0],[1,2],[1,0],[2,2],[2,0],[2,1]],
+  Caru:   [[1,2],[2,1],[3,1],[1,2],[2,2],[3,1],[2,2],[1,2],[1,2],[2,2],[3,0],[2,1],[1,2],[1,2],[3,1],[1,2]],
+  Mari:   [[2,0],[2,1],[2,0],[1,1],[1,1],[3,0],[2,2],[2,2],[1,2],[3,1],[4,1],[1,1],[1,0],[0,2],[2,1],[2,2]],
+  Mãe:    [[1,2],[3,1],[2,0],[1,2],[2,3],[3,1],[2,0],[2,0],[1,2],[1,0],[3,2],[1,2],[1,2],[0,1],[3,1],[2,1]],
 };
 
-// Palpites fases futuras — preenchidos quando cada fase chegar
-const PALPITES_MATA = {
-  oitavas:  {Claudia:[],Roberta:[],Pati:[],Caru:[],Mari:[],Mãe:[]},
-  quartas:  {Claudia:[],Roberta:[],Pati:[],Caru:[],Mari:[],Mãe:[]},
-  semi:     {Claudia:[],Roberta:[],Pati:[],Caru:[],Mari:[],Mãe:[]},
-  terceiro: {Claudia:[],Roberta:[],Pati:[],Caru:[],Mari:[],Mãe:[]},
-  final:    {Claudia:[],Roberta:[],Pati:[],Caru:[],Mari:[],Mãe:[]},
+// Oitavas — ordem: Canadá×Marrocos, Paraguai×França, Brasil×Noruega, México×Inglaterra,
+//                  Portugal×Espanha, EUA×Bélgica, Argentina×Egito, Suíça×Colômbia
+const PALPITES_OITAVAS = {
+  Claudia:[[0,2],[0,2],[2,2],[2,2],[1,2],[1,1],[2,1],[1,2]],
+  Roberta:[[1,2],[0,3],[2,1],[2,1],[2,1],[2,2],[3,1],[1,3]],
+  Pati:   [[0,2],[0,3],[2,1],[1,1],[0,2],[1,1],[2,0],[1,2]],
+  Caru:   [[1,2],[1,2],[2,1],[1,2],[2,2],[1,1],[2,1],[1,2]],
+  Mari:   [[1,3],[1,3],[3,2],[2,1],[2,2],[2,2],[2,1],[1,1]],
+  Mãe:    [[1,2],[1,3],[2,1],[2,1],[1,3],[0,1],[2,1],[1,3]],
 };
+
+const PALPITES_FUTUROS = {
+  quartas: {Claudia:[],Roberta:[],Pati:[],Caru:[],Mari:[],Mãe:[]},
+  semi:    {Claudia:[],Roberta:[],Pati:[],Caru:[],Mari:[],Mãe:[]},
+  terceiro:{Claudia:[],Roberta:[],Pati:[],Caru:[],Mari:[],Mãe:[]},
+  final:   {Claudia:[],Roberta:[],Pati:[],Caru:[],Mari:[],Mãe:[]},
+};
+
+function getPalpites(p, faseId, idx){
+  if(faseId==='fase1')    return (PALPITES_GRUPOS[p]||[])[idx];
+  if(faseId==='dezesseis')return (PALPITES_DEZESSEIS[p]||[])[idx];
+  if(faseId==='oitavas')  return (PALPITES_OITAVAS[p]||[])[idx];
+  return ((PALPITES_FUTUROS[faseId]||{})[p]||[])[idx];
+}
 
 // ─── ESTADO ──────────────────────────────────────────────────────────────────
-let STATE = {
-  resultados: {fase1:{}, dezesseis:{}, oitavas:{}, quartas:{}, semi:{}, terceiro:{}, final:{}},
-  // Classificados derivados dos resultados dos grupos (preenchidos automaticamente)
-  // formato: {A:{1:'México',2:'Coreia do Sul',3:'Rep. Tcheca'}, ...}
-  classificados: {},
-  updatedAt: null
-};
+let STATE = {resultados:{fase1:{},dezesseis:{},oitavas:{},quartas:{},semi:{},terceiro:{},final:{}}};
 let faseSelecionada = 'fase1';
 
 function loadLocalOverrides(){try{const r=localStorage.getItem('bolao2026_overrides');if(r)return JSON.parse(r);}catch(e){}return{};}
 function saveLocalOverrides(o){try{localStorage.setItem('bolao2026_overrides',JSON.stringify(o));}catch(e){}}
 
-// ─── SYNC ────────────────────────────────────────────────────────────────────
 async function syncResultados(manual=false){
   const btn=document.getElementById('sync-btn');
   const status=document.getElementById('sync-status');
@@ -367,151 +301,31 @@ async function syncResultados(manual=false){
     const data=await r.json();
     const ov=loadLocalOverrides();
     STATE.resultados=data.resultados||{fase1:{},dezesseis:{},oitavas:{},quartas:{},semi:{},terceiro:{},final:{}};
-    // garante todas as chaves existem
     ['fase1','dezesseis','oitavas','quartas','semi','terceiro','final'].forEach(f=>{
       if(!STATE.resultados[f])STATE.resultados[f]={};
-    });
-    Object.entries(ov).forEach(([fase,jogos])=>{
-      if(!STATE.resultados[fase])STATE.resultados[fase]={};
-      Object.entries(jogos).forEach(([idx,res])=>{STATE.resultados[fase][idx]=res;});
+      if(ov[f])Object.entries(ov[f]).forEach(([idx,res])=>{STATE.resultados[f][idx]=res;});
     });
     STATE.updatedAt=data.updated_at;
     const d=new Date(data.updated_at);
     status.textContent=`Sync: ${d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})} ${d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}`;
-    atualizarClassificados();
     renderRanking();
     if(document.getElementById('palpites').classList.contains('active'))renderPalpites();
     if(document.getElementById('resultados').classList.contains('active'))renderResultados();
     if(manual)toast('Resultados atualizados!','success');
   }catch(e){
-    // sem JSON remoto — usa só overrides locais
     const ov=loadLocalOverrides();
     ['fase1','dezesseis','oitavas','quartas','semi','terceiro','final'].forEach(f=>{
       if(!STATE.resultados[f])STATE.resultados[f]={};
       if(ov[f])Object.entries(ov[f]).forEach(([idx,res])=>{STATE.resultados[f][idx]=res;});
     });
     status.textContent='Dados locais';
-    if(manual)toast('Sem conexão — usando dados locais','error');
-    atualizarClassificados();
+    if(manual)toast('Sem conexão — dados locais','error');
     renderRanking();
   }finally{
     btn.disabled=false;btn.textContent='⟳ Atualizar';
   }
 }
 
-// ─── CLASSIFICADOS AUTOMÁTICOS ───────────────────────────────────────────────
-function atualizarClassificados(){
-  const grupos=['A','B','C','D','E','F','G','H','I','J','K','L'];
-  const idxBase={A:0,B:6,C:12,D:18,E:24,F:30,G:36,H:42,I:48,J:54,K:60,L:66};
-  const timesGrupo={
-    A:['México','Coreia do Sul','Rep. Tcheca','África do Sul'],
-    B:['Canadá','Catar','Suíça','Bósnia'],
-    C:['Brasil','Haiti','Escócia','Marrocos'],
-    D:['EUA','Austrália','Turquia','Paraguai'],
-    E:['Alemanha','Costa do Marfim','Equador','Curaçao'],
-    F:['Holanda','Suécia','Tunísia','Japão'],
-    G:['Bélgica','Irã','Nova Zelândia','Egito'],
-    H:['Espanha','Arábia Saudita','Uruguai','Cabo Verde'],
-    I:['França','Iraque','Noruega','Senegal'],
-    J:['Argentina','Áustria','Jordânia','Argélia'],
-    K:['Portugal','Uzbequistão','Colômbia','RD Congo'],
-    L:['Inglaterra','Gana','Panamá','Croácia'],
-  };
-  // jogos dentro de cada grupo (índices locais 0-5)
-  // partida: [time1idx, time2idx]
-  const jogosGrupoLocal=[
-    [0,3],[1,2],[2,3],[0,1],[3,1],[0,2]
-  ];
-  STATE.classificados={};
-  grupos.forEach(g=>{
-    const base=idxBase[g];
-    const times=timesGrupo[g];
-    const pts={};const gd={};const gf={};
-    times.forEach(t=>{pts[t]=0;gd[t]=0;gf[t]=0;});
-    jogosGrupoLocal.forEach(([i1,i2],li)=>{
-      const res=STATE.resultados.fase1[base+li];
-      if(!res||res[0]===null)return;
-      const t1=times[i1],t2=times[i2];
-      const [g1,g2]=res;
-      gf[t1]+=g1;gf[t2]+=g2;
-      gd[t1]+=(g1-g2);gd[t2]+=(g2-g1);
-      if(g1>g2){pts[t1]+=3;}else if(g1<g2){pts[t2]+=3;}else{pts[t1]+=1;pts[t2]+=1;}
-    });
-    const sorted=times.slice().sort((a,b)=>pts[b]-pts[a]||gd[b]-gd[a]||gf[b]-gf[a]);
-    STATE.classificados[g]={1:sorted[0],2:sorted[1],3:sorted[2],4:sorted[3]};
-  });
-}
-
-// Resolve o nome de um time a partir da fonte (ex: '1ºA', 'V(j0)', 'P(s0)')
-function resolveTime(src){
-  const mGrupo=src.match(/^(\d+)º([A-L])$/);
-  if(mGrupo){
-    const pos=parseInt(mGrupo[1]),g=mGrupo[2];
-    return STATE.classificados[g]?.[pos]||src;
-  }
-  // Vencedor/Perdedor de jogo anterior
-  const mV=src.match(/^V\(([joqus])(\d+)\)$/);
-  if(mV){
-    const tipo=mV[1],idx=parseInt(mV[2]);
-    let faseId;
-    if(tipo==='j')faseId='dezesseis';
-    else if(tipo==='o')faseId='oitavas';
-    else if(tipo==='q')faseId='quartas';
-    else if(tipo==='s')faseId='semi';
-    const res=STATE.resultados[faseId]?.[idx];
-    if(!res||res[0]===null)return src;
-    const jogos=tipo==='j'?TIMES_DEZESSEIS:tipo==='o'?getJogosOitavas():tipo==='q'?getJogosQuartas():getJogosSemi();
-    const jogo=jogos[idx];
-    if(!jogo)return src;
-    return res[0]>res[1]?jogo.t1:res[0]<res[1]?jogo.t2:(jogo.t1+'/'+jogo.t2);
-  }
-  const mP=src.match(/^P\(([s])(\d+)\)$/);
-  if(mP){
-    const idx=parseInt(mP[2]);
-    const res=STATE.resultados.semi?.[idx];
-    if(!res||res[0]===null)return src;
-    const jogos=getJogosSemi();
-    const jogo=jogos[idx];
-    if(!jogo)return src;
-    return res[0]<res[1]?jogo.t1:res[0]>res[1]?jogo.t2:src;
-  }
-  return src;
-}
-
-function getJogosOitavas(){
-  return CHAVAMENTO_OITAVAS.map(c=>({t1:resolveTime(c.src1),t2:resolveTime(c.src2),data:c.data}));
-}
-function getJogosQuartas(){
-  return CHAVAMENTO_QUARTAS.map(c=>({t1:resolveTime(c.src1),t2:resolveTime(c.src2),data:c.data}));
-}
-function getJogosSemi(){
-  return CHAVAMENTO_SEMI.map(c=>({t1:resolveTime(c.src1),t2:resolveTime(c.src2),data:c.data}));
-}
-function getJogosTerceiro(){
-  return CHAVAMENTO_TERCEIRO.map(c=>({t1:resolveTime(c.src1),t2:resolveTime(c.src2),data:c.data}));
-}
-function getJogosFinal(){
-  return CHAVAMENTO_FINAL.map(c=>({t1:resolveTime(c.src1),t2:resolveTime(c.src2),data:c.data}));
-}
-
-function getJogosFase(faseId){
-  if(faseId==='fase1')return JOGOS_GRUPOS;
-  if(faseId==='dezesseis')return TIMES_DEZESSEIS.map((t,i)=>({...t,data:JOGOS_DEZESSEIS_BASE[i].data,src1:JOGOS_DEZESSEIS_BASE[i].src1,src2:JOGOS_DEZESSEIS_BASE[i].src2}));
-  if(faseId==='oitavas')return getJogosOitavas();
-  if(faseId==='quartas')return getJogosQuartas();
-  if(faseId==='semi')return getJogosSemi();
-  if(faseId==='terceiro')return getJogosTerceiro();
-  if(faseId==='final')return getJogosFinal();
-  return [];
-}
-
-function getPalpites(p,faseId,idx){
-  if(faseId==='fase1')return (PALPITES_GRUPOS[p]||[])[idx];
-  if(faseId==='dezesseis')return (PALPITES_DEZESSEIS[p]||[])[idx];
-  return ((PALPITES_MATA[faseId]||{})[p]||[])[idx];
-}
-
-// ─── PONTUAÇÃO ───────────────────────────────────────────────────────────────
 function resJogo(g1,g2){return g1>g2?'h':g1<g2?'a':'d';}
 
 function calcPontos(p){
@@ -532,7 +346,6 @@ function calcPontos(p){
   return{total,acertosR,acertosE};
 }
 
-// ─── RENDER RANKING ──────────────────────────────────────────────────────────
 function renderRanking(){
   const scores=PARTICIPANTES.map(p=>({p,...calcPontos(p)})).sort((a,b)=>b.total-a.total);
   const maxPts=scores[0]?.total||1;
@@ -546,36 +359,27 @@ function renderRanking(){
     </tr>`).join('');
 
   let totalJ=0,jogadosJ=0;
-  const countsFase={};
+  const counts={};
   FASES.forEach(({id})=>{
-    const jogos=getJogosFase(id);
-    totalJ+=jogos.length;
-    let n=0;
-    jogos.forEach((_,i)=>{const r=STATE.resultados[id]?.[i];if(r&&r[0]!==null)n++;});
-    jogadosJ+=n;
-    countsFase[id]=n;
+    const jogos=getJogosFase(id);totalJ+=jogos.length;
+    let n=0;jogos.forEach((_,i)=>{const r=STATE.resultados[id]?.[i];if(r&&r[0]!==null)n++;});
+    jogadosJ+=n;counts[id]=n;
   });
   const pct=totalJ?Math.round(jogadosJ/totalJ*100):0;
   document.getElementById('prog-label').textContent=`Torneio — ${pct}% concluído`;
   document.getElementById('prog-num').textContent=`${jogadosJ} / ${totalJ} jogos`;
   document.getElementById('prog-fill').style.width=pct+'%';
-
-  const n1=countsFase['fase1']||0;
-  const n2=countsFase['dezesseis']||0;
   document.getElementById('metrics').innerHTML=`
     <div class="metric"><div class="val">${scores[0].total}</div><div class="lbl">Líder: ${scores[0].p}</div></div>
-    <div class="metric"><div class="val">${n1}/72</div><div class="lbl">Grupos</div></div>
-    <div class="metric"><div class="val">${n2}/16</div><div class="lbl">1/16 avos</div></div>
-    <div class="metric"><div class="val">${scores[0].total-scores[scores.length-1].total}</div><div class="lbl">Diferença 1º/último</div></div>`;
+    <div class="metric"><div class="val">${counts['fase1']||0}/72</div><div class="lbl">Grupos</div></div>
+    <div class="metric"><div class="val">${counts['dezesseis']||0}/16</div><div class="lbl">1/16</div></div>
+    <div class="metric"><div class="val">${counts['oitavas']||0}/8</div><div class="lbl">Oitavas</div></div>`;
 }
 
-// ─── RENDER RESULTADOS ───────────────────────────────────────────────────────
 function renderPhPills(){
-  const container=document.getElementById('phase-pills');
-  container.innerHTML=FASES.map(f=>`
+  document.getElementById('phase-pills').innerHTML=FASES.map(f=>`
     <button class="phase-pill ${f.id===faseSelecionada?'active':''}" onclick="selecionarFase('${f.id}',this)">
-      ${f.label} ×${f.peso}
-    </button>`).join('');
+      ${f.label} ×${f.peso}</button>`).join('');
 }
 
 function selecionarFase(id,el){
@@ -589,35 +393,26 @@ function renderResultados(){
   renderPhPills();
   const fase=FASES.find(f=>f.id===faseSelecionada);
   const jogos=getJogosFase(faseSelecionada);
-  const isMata=faseSelecionada!=='fase1';
-  let html='<div class="game-block">';
-  let curG='';
   const gLabels={A:'Grupo A',B:'Grupo B',C:'Grupo C',D:'Grupo D',E:'Grupo E',F:'Grupo F',G:'Grupo G',H:'Grupo H',I:'Grupo I',J:'Grupo J',K:'Grupo K',L:'Grupo L'};
-
+  let html='<div class="game-block">',curG='';
   jogos.forEach((j,idx)=>{
     if(faseSelecionada==='fase1'&&j.g!==curG){
       if(curG)html+=`</div><div class="game-block">`;
-      curG=j.g;
-      html+=`<div class="group-hdr">${gLabels[j.g]}</div>`;
+      curG=j.g;html+=`<div class="group-hdr">${gLabels[j.g]}</div>`;
     }
     const res=STATE.resultados[faseSelecionada]?.[idx]||[null,null];
-    const v1=res[0]!==null?res[0]:'';
-    const v2=res[1]!==null?res[1]:'';
+    const v1=res[0]!==null?res[0]:'';const v2=res[1]!==null?res[1]:'';
     const dataStr=j.data?`<div class="game-auto">${j.data}</div>`:'';
-    // mostra origem dos times no mata-mata
-    const src=faseSelecionada!=='fase1'&&faseSelecionada!=='dezesseis'?
-      `<div class="game-auto" style="color:var(--text3)">${j.t1} × ${j.t2}</div>`:'';
     html+=`<div class="game-row">
       <div><div class="game-name">${j.t1} <span style="color:var(--text3)">×</span> ${j.t2}</div>${dataStr}</div>
       <div class="score-inputs">
         <input type="number" min="0" max="30" id="r_${faseSelecionada}_${idx}_1" value="${v1}" placeholder="—">
         <span class="sep">×</span>
         <input type="number" min="0" max="30" id="r_${faseSelecionada}_${idx}_2" value="${v2}" placeholder="—">
-      </div>
-    </div>`;
+      </div></div>`;
   });
   html+=`</div>`;
-  if(isMata)html+=`<div class="penalty-note">⚠️ Inserir placar de tempo normal + prorrogação. Pênaltis não contam para placar exato.</div>`;
+  if(fase.penalti)html+=`<div class="penalty-note">⚠️ Inserir placar de tempo normal + prorrogação. Pênaltis não contam para placar exato.</div>`;
   html+=`<button class="save-btn" onclick="salvarResultados()">💾 Salvar e recalcular</button>`;
   document.getElementById('resultados-content').innerHTML=html;
 }
@@ -635,27 +430,22 @@ function salvarResultados(){
     }
   });
   saveLocalOverrides(ov);
-  atualizarClassificados();
   renderRanking();
-  // re-renderiza para atualizar nomes automáticos
-  renderResultados();
+  if(faseSelecionada==='resultados')renderResultados();
   toast('Salvo! Ranking atualizado.','success');
 }
 
-// ─── RENDER PALPITES ─────────────────────────────────────────────────────────
 function renderPalpites(){
   const p=document.getElementById('part-select').value;
   let html='';
-  FASES.forEach(({id,label,peso})=>{
+  const faseLabels={fase1:'Fase de Grupos (×1)',dezesseis:'1/16 avos (×2)',oitavas:'Oitavas (×3)',quartas:'Quartas (×4)',semi:'Semifinais (×4)',terceiro:'3º Lugar (×5)',final:'Final (×5)'};
+  FASES.forEach(({id,peso})=>{
     const jogos=getJogosFase(id);
-    const temPalpites=id==='fase1'?!!(PALPITES_GRUPOS[p]?.length):
-      id==='dezesseis'?!!(PALPITES_DEZESSEIS[p]?.length):
-      !!((PALPITES_MATA[id]||{})[p]?.length);
-    if(!temPalpites&&id!=='fase1'&&id!=='dezesseis')return;
-
-    html+=`<div class="fase-hdr">${label} — peso ${peso}×${id!=='fase1'&&id!=='dezesseis'?' · sem pênaltis':''}</div>`;
+    const temPalpites=id==='fase1'?true:id==='dezesseis'?true:id==='oitavas'?true:
+      !!((PALPITES_FUTUROS[id]||{})[p]?.length);
+    if(!temPalpites)return;
+    html+=`<div class="fase-hdr">${faseLabels[id]}</div>`;
     html+=`<table class="palpite-table"><thead><tr><th>Jogo</th><th>Palpite</th><th>Resultado</th><th>Status</th><th>Pts</th></tr></thead><tbody>`;
-
     let curG='';
     jogos.forEach((j,idx)=>{
       if(id==='fase1'&&j.g!==curG){
@@ -696,7 +486,6 @@ function toast(msg,type){
   setTimeout(()=>t.classList.remove('show'),3000);
 }
 
-atualizarClassificados();
 renderRanking();
 syncResultados(false);
 </script>
