@@ -173,6 +173,33 @@ MATA_MATA_NAME_FIX = {
     "EUA": "Estados Unidos",
 }
 
+
+JOGOS_OITAVAS = [
+    {"t1":"Canadá","t2":"Marrocos"},
+    {"t1":"Paraguai","t2":"França"},
+    {"t1":"Brasil","t2":"Noruega"},
+    {"t1":"México","t2":"Inglaterra"},
+    {"t1":"Portugal","t2":"Espanha"},
+    {"t1":"Estados Unidos","t2":"Bélgica"},
+    {"t1":"Argentina","t2":"Egito"},
+    {"t1":"Suíça","t2":"Colômbia"},
+]
+
+# Quartas, semi, terceiro e final serao preenchidos conforme o torneio avança
+JOGOS_QUARTAS   = []
+JOGOS_SEMI      = []
+JOGOS_TERCEIRO  = []
+JOGOS_FINAL     = []
+
+JOGOS_POR_FASE = {
+    "dezesseis": JOGOS_DEZESSEIS,
+    "oitavas":   JOGOS_OITAVAS,
+    "quartas":   JOGOS_QUARTAS,
+    "semi":      JOGOS_SEMI,
+    "terceiro":  JOGOS_TERCEIRO,
+    "final":     JOGOS_FINAL,
+}
+
 STAGE_MAP = {
     "LAST_32": "dezesseis",
     "ROUND_OF_32": "dezesseis",
