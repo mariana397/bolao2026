@@ -131,11 +131,9 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
   </div>
 </div>
 <div class="toast" id="toast"></div>
-
 <script>
-const PARTICIPANTES = ['Claudia','Roberta','Pati','Caru','Mari','Mãe'];
-
-const FASES = [
+const PARTICIPANTES=['Claudia','Roberta','Pati','Caru','Mari','Mãe'];
+const FASES=[
   {id:'fase1',    label:'Grupos',   peso:1, penalti:false},
   {id:'dezesseis',label:'1/16',     peso:2, penalti:true},
   {id:'oitavas',  label:'Oitavas',  peso:3, penalti:true},
@@ -144,8 +142,7 @@ const FASES = [
   {id:'terceiro', label:'3º Lugar', peso:5, penalti:false},
   {id:'final',    label:'Final',    peso:5, penalti:true},
 ];
-
-const JOGOS_GRUPOS = [
+const JOGOS_GRUPOS=[
   {g:'A',t1:'México',t2:'África do Sul'},{g:'A',t1:'Coreia do Sul',t2:'Rep. Tcheca'},
   {g:'A',t1:'Rep. Tcheca',t2:'África do Sul'},{g:'A',t1:'México',t2:'Coreia do Sul'},
   {g:'A',t1:'África do Sul',t2:'Coreia do Sul'},{g:'A',t1:'México',t2:'Rep. Tcheca'},
@@ -183,28 +180,25 @@ const JOGOS_GRUPOS = [
   {g:'L',t1:'Inglaterra',t2:'Gana'},{g:'L',t1:'Panamá',t2:'Croácia'},
   {g:'L',t1:'Panamá',t2:'Inglaterra'},{g:'L',t1:'Croácia',t2:'Gana'},
 ];
-
-const JOGOS_DEZESSEIS = [
-  {t1:'África do Sul',t2:'Canadá',data:'28/6 16h Inglewood'},
-  {t1:'Brasil',t2:'Japão',data:'29/6 14h Houston'},
-  {t1:'Alemanha',t2:'Paraguai',data:'29/6 17h30 Foxborough'},
-  {t1:'Países Baixos',t2:'Marrocos',data:'29/6 22h Monterrey'},
-  {t1:'Costa do Marfim',t2:'Noruega',data:'30/6 14h Dallas'},
-  {t1:'França',t2:'Suécia',data:'30/6 18h East Rutherford'},
-  {t1:'México',t2:'Equador',data:'30/6 22h Cidade do México'},
-  {t1:'Inglaterra',t2:'RD Congo',data:'1/7 13h Atlanta'},
-  {t1:'Bélgica',t2:'Senegal',data:'1/7 17h East Rutherford'},
-  {t1:'Estados Unidos',t2:'Bósnia',data:'1/7 21h Santa Clara'},
-  {t1:'Espanha',t2:'Áustria',data:'2/7 16h Inglewood'},
-  {t1:'Portugal',t2:'Croácia',data:'2/7 20h Toronto'},
-  {t1:'Suíça',t2:'Argélia',data:'3/7 0h Vancouver'},
-  {t1:'Austrália',t2:'Egito',data:'3/7 15h Dallas'},
-  {t1:'Argentina',t2:'Cabo Verde',data:'3/7 19h Miami'},
-  {t1:'Colômbia',t2:'Gana',data:'3/7 22h30 Kansas City'},
+const JOGOS_DEZESSEIS=[
+  {t1:'África do Sul',t2:'Canadá',data:'28/6 16h'},
+  {t1:'Brasil',t2:'Japão',data:'29/6 14h'},
+  {t1:'Alemanha',t2:'Paraguai',data:'29/6 17h30'},
+  {t1:'Países Baixos',t2:'Marrocos',data:'29/6 22h'},
+  {t1:'Costa do Marfim',t2:'Noruega',data:'30/6 14h'},
+  {t1:'França',t2:'Suécia',data:'30/6 18h'},
+  {t1:'México',t2:'Equador',data:'30/6 22h'},
+  {t1:'Inglaterra',t2:'RD Congo',data:'1/7 13h'},
+  {t1:'Bélgica',t2:'Senegal',data:'1/7 17h'},
+  {t1:'Estados Unidos',t2:'Bósnia',data:'1/7 21h'},
+  {t1:'Espanha',t2:'Áustria',data:'2/7 16h'},
+  {t1:'Portugal',t2:'Croácia',data:'2/7 20h'},
+  {t1:'Suíça',t2:'Argélia',data:'3/7 0h'},
+  {t1:'Austrália',t2:'Egito',data:'3/7 15h'},
+  {t1:'Argentina',t2:'Cabo Verde',data:'3/7 19h'},
+  {t1:'Colômbia',t2:'Gana',data:'3/7 22h30'},
 ];
-
-// Oitavas — times reais confirmados
-const JOGOS_OITAVAS = [
+const JOGOS_OITAVAS=[
   {t1:'Canadá',t2:'Marrocos',data:'4/7 14h Houston'},
   {t1:'Paraguai',t2:'França',data:'4/7 18h Filadélfia'},
   {t1:'Brasil',t2:'Noruega',data:'5/7 17h East Rutherford'},
@@ -214,33 +208,31 @@ const JOGOS_OITAVAS = [
   {t1:'Argentina',t2:'Egito',data:'7/7 13h Atlanta'},
   {t1:'Suíça',t2:'Colômbia',data:'7/7 17h Vancouver'},
 ];
-
-const JOGOS_QUARTAS = [
-  {t1:'A definir',t2:'A definir',data:'9/7 17h Foxborough'},
-  {t1:'A definir',t2:'A definir',data:'10/7 16h Inglewood'},
-  {t1:'A definir',t2:'A definir',data:'11/7 18h Miami'},
-  {t1:'A definir',t2:'A definir',data:'11/7 22h Kansas City'},
+const JOGOS_QUARTAS=[
+  {t1:'França',t2:'Marrocos',data:'9/7 17h Foxborough'},
+  {t1:'Espanha',t2:'Bélgica',data:'10/7 16h Inglewood'},
+  {t1:'Noruega',t2:'Inglaterra',data:'11/7 18h Miami'},
+  {t1:'Argentina',t2:'Suíça',data:'11/7 22h Kansas City'},
 ];
-const JOGOS_SEMI = [
+const JOGOS_SEMI=[
   {t1:'A definir',t2:'A definir',data:'14/7 16h Dallas'},
   {t1:'A definir',t2:'A definir',data:'15/7 16h Atlanta'},
 ];
-const JOGOS_TERCEIRO = [{t1:'A definir',t2:'A definir',data:'18/7 18h Miami'}];
-const JOGOS_FINAL    = [{t1:'A definir',t2:'A definir',data:'19/7 16h East Rutherford'}];
+const JOGOS_TERCEIRO=[{t1:'A definir',t2:'A definir',data:'18/7 18h Miami'}];
+const JOGOS_FINAL=[{t1:'A definir',t2:'A definir',data:'19/7 16h East Rutherford'}];
 
 function getJogosFase(id){
-  if(id==='fase1')    return JOGOS_GRUPOS;
+  if(id==='fase1')return JOGOS_GRUPOS;
   if(id==='dezesseis')return JOGOS_DEZESSEIS;
-  if(id==='oitavas')  return JOGOS_OITAVAS;
-  if(id==='quartas')  return JOGOS_QUARTAS;
-  if(id==='semi')     return JOGOS_SEMI;
-  if(id==='terceiro') return JOGOS_TERCEIRO;
-  if(id==='final')    return JOGOS_FINAL;
+  if(id==='oitavas')return JOGOS_OITAVAS;
+  if(id==='quartas')return JOGOS_QUARTAS;
+  if(id==='semi')return JOGOS_SEMI;
+  if(id==='terceiro')return JOGOS_TERCEIRO;
+  if(id==='final')return JOGOS_FINAL;
   return [];
 }
 
-// ─── PALPITES ────────────────────────────────────────────────────────────────
-const PALPITES_GRUPOS = {
+const PALPITES_GRUPOS={
   Claudia:[[1,2],[0,1],[1,2],[1,1],[2,0],[1,3],[2,0],[1,3],[2,0],[1,0],[2,1],[1,1],[3,0],[1,4],[1,2],[4,0],[1,3],[2,0],[1,2],[1,2],[2,1],[1,1],[1,0],[2,2],[3,0],[2,1],[2,2],[1,0],[2,2],[0,3],[2,2],[3,2],[3,2],[2,1],[3,2],[2,3],[3,0],[2,1],[3,1],[2,1],[1,1],[1,3],[5,0],[2,2],[4,1],[2,0],[0,3],[1,4],[4,2],[1,3],[1,4],[2,3],[2,3],[2,2],[3,0],[2,0],[3,2],[4,1],[2,1],[0,3],[3,1],[2,2],[4,2],[3,2],[2,2],[0,2],[3,0],[2,0],[3,2],[1,3],[0,4],[2,2]],
   Roberta:[[2,1],[3,1],[1,2],[1,1],[4,1],[1,0],[1,0],[0,2],[1,0],[3,0],[1,1],[0,0],[2,0],[0,2],[1,1],[4,0],[1,3],[2,0],[2,3],[1,2],[1,2],[0,2],[2,1],[3,1],[4,0],[2,3],[3,2],[2,0],[1,3],[1,2],[2,1],[1,2],[2,0],[1,2],[2,0],[2,3],[2,0],[0,0],[3,1],[1,0],[1,0],[0,3],[4,0],[0,3],[3,1],[4,0],[1,1],[1,1],[5,0],[2,3],[3,1],[2,2],[2,2],[2,1],[5,0],[1,0],[3,1],[1,1],[1,2],[0,3],[3,0],[1,3],[4,0],[3,1],[2,3],[1,1],[2,2],[1,1],[3,0],[2,4],[1,5],[3,1]],
   Pati:[[2,0],[2,1],[0,2],[1,1],[2,1],[2,0],[2,0],[0,2],[1,0],[1,0],[1,1],[0,0],[2,0],[null,2],[1,1],[2,0],[1,1],[2,1],[1,1],[0,1],[0,2],[2,0],[0,1],[1,1],[2,0],[1,2],[3,1],[2,0],[1,1],[1,2],[1,1],[2,0],[0,1],[2,1],[1,1],[0,2],[0,1],[0,0],[1,1],[0,2],[1,0],[0,2],[2,0],[1,2],[1,1],[2,0],[0,1],[1,3],[2,0],[0,1],[2,0],[null,3],[2,1],[null,1],[2,0],[1,1],[2,1],[0,1],[1,1],[0,2],[2,1],[0,2],[3,0],[2,1],[1,2],[0,1],[1,1],[1,1],[2,1],[0,2],[1,3],[2,1]],
@@ -248,8 +240,7 @@ const PALPITES_GRUPOS = {
   Mari:[[2,1],[1,1],[0,1],[2,0],[1,2],[1,1],[0,0],[0,1],[1,0],[1,0],[1,1],[1,2],[2,0],[1,1],[1,2],[2,1],[0,1],[2,1],[1,2],[1,2],[2,2],[1,1],[1,2],[2,0],[3,0],[1,2],[2,0],[2,0],[2,3],[1,2],[2,1],[2,1],[1,2],[1,1],[2,1],[0,1],[2,1],[1,0],[1,0],[0,1],[1,2],[0,2],[3,0],[1,2],[2,1],[3,0],[0,1],[2,2],[3,1],[1,2],[3,0],[1,2],[2,1],[2,0],[2,1],[0,1],[2,1],[0,1],[1,1],[0,2],[2,1],[0,2],[2,0],[3,1],[1,2],[2,0],[1,1],[1,1],[2,0],[1,2],[2,2],[2,1]],
   Mãe:[[1,1],[2,1],[1,0],[2,1],[2,2],[1,0],[0,1],[2,1],[3,1],[1,1],[2,0],[1,1],[2,1],[0,2],[1,2],[3,0],[1,3],[2,0],[2,2],[1,3],[2,2],[2,0],[2,1],[2,0],[4,0],[2,2],[3,1],[3,1],[2,3],[2,4],[3,2],[1,3],[2,1],[2,1],[3,1],[2,2],[2,1],[0,1],[3,1],[0,2],[2,0],[1,3],[4,0],[1,2],[2,0],[3,1],[1,1],[1,3],[3,2],[2,1],[2,0],[2,2],[1,3],[2,1],[2,1],[1,0],[3,1],[1,3],[2,2],[0,2],[3,0],[0,2],[3,1],[3,1],[1,3],[3,2],[2,0],[1,0],[3,1],[0,2],[1,3],[2,1]],
 };
-
-const PALPITES_DEZESSEIS = {
+const PALPITES_DEZESSEIS={
   Claudia:[[1,2],[2,1],[2,1],[3,2],[1,2],[3,1],[1,2],[2,0],[2,1],[3,0],[3,1],[1,2],[2,0],[2,1],[4,1],[2,3]],
   Roberta:[[2,1],[3,1],[2,1],[3,1],[1,2],[3,0],[2,1],[2,0],[3,2],[2,0],[3,0],[2,1],[2,1],[2,0],[4,0],[2,1]],
   Pati:   [[2,1],[3,1],[2,0],[1,1],[2,2],[2,0],[1,1],[2,0],[1,1],[1,0],[2,0],[1,2],[1,0],[2,2],[2,0],[2,1]],
@@ -257,10 +248,7 @@ const PALPITES_DEZESSEIS = {
   Mari:   [[2,0],[2,1],[2,0],[1,1],[1,1],[3,0],[2,2],[2,2],[1,2],[3,1],[4,1],[1,1],[1,0],[0,2],[2,1],[2,2]],
   Mãe:    [[1,2],[3,1],[2,0],[1,2],[2,3],[3,1],[2,0],[2,0],[1,2],[1,0],[3,2],[1,2],[1,2],[0,1],[3,1],[2,1]],
 };
-
-// Oitavas — ordem: Canadá×Marrocos, Paraguai×França, Brasil×Noruega, México×Inglaterra,
-//                  Portugal×Espanha, EUA×Bélgica, Argentina×Egito, Suíça×Colômbia
-const PALPITES_OITAVAS = {
+const PALPITES_OITAVAS={
   Claudia:[[0,2],[0,2],[2,2],[2,2],[1,2],[1,1],[2,1],[1,2]],
   Roberta:[[1,2],[0,3],[2,1],[2,1],[2,1],[2,2],[3,1],[1,3]],
   Pati:   [[0,2],[0,3],[2,1],[1,1],[0,2],[1,1],[2,0],[1,2]],
@@ -268,24 +256,30 @@ const PALPITES_OITAVAS = {
   Mari:   [[1,3],[1,3],[3,2],[2,1],[2,2],[2,2],[2,1],[1,1]],
   Mãe:    [[1,2],[1,3],[2,1],[2,1],[1,3],[0,1],[2,1],[1,3]],
 };
-
-const PALPITES_FUTUROS = {
-  quartas: {Claudia:[],Roberta:[],Pati:[],Caru:[],Mari:[],Mãe:[]},
+const PALPITES_QUARTAS={
+  Claudia:[[1,1],[1,0],[1,1],[1,0]],
+  Roberta:[[3,1],[1,2],[2,1],[3,1]],
+  Pati:   [[3,1],[1,1],[1,2],[1,1]],
+  Caru:   [[2,2],[2,3],[2,1],[2,1]],
+  Mari:   [[3,3],[2,2],[3,1],[2,2]],
+  Mãe:    [[3,1],[2,0],[1,2],[3,0]],
+};
+const PALPITES_FUTUROS={
   semi:    {Claudia:[],Roberta:[],Pati:[],Caru:[],Mari:[],Mãe:[]},
   terceiro:{Claudia:[],Roberta:[],Pati:[],Caru:[],Mari:[],Mãe:[]},
   final:   {Claudia:[],Roberta:[],Pati:[],Caru:[],Mari:[],Mãe:[]},
 };
 
-function getPalpites(p, faseId, idx){
+function getPalpites(p,faseId,idx){
   if(faseId==='fase1')    return (PALPITES_GRUPOS[p]||[])[idx];
   if(faseId==='dezesseis')return (PALPITES_DEZESSEIS[p]||[])[idx];
   if(faseId==='oitavas')  return (PALPITES_OITAVAS[p]||[])[idx];
+  if(faseId==='quartas')  return (PALPITES_QUARTAS[p]||[])[idx];
   return ((PALPITES_FUTUROS[faseId]||{})[p]||[])[idx];
 }
 
-// ─── ESTADO ──────────────────────────────────────────────────────────────────
-let STATE = {resultados:{fase1:{},dezesseis:{},oitavas:{},quartas:{},semi:{},terceiro:{},final:{}}};
-let faseSelecionada = 'fase1';
+let STATE={resultados:{fase1:{},dezesseis:{},oitavas:{},quartas:{},semi:{},terceiro:{},final:{}}};
+let faseSelecionada='fase1';
 
 function loadLocalOverrides(){try{const r=localStorage.getItem('bolao2026_overrides');if(r)return JSON.parse(r);}catch(e){}return{};}
 function saveLocalOverrides(o){try{localStorage.setItem('bolao2026_overrides',JSON.stringify(o));}catch(e){}}
@@ -305,9 +299,8 @@ async function syncResultados(manual=false){
       if(!STATE.resultados[f])STATE.resultados[f]={};
       if(ov[f])Object.entries(ov[f]).forEach(([idx,res])=>{STATE.resultados[f][idx]=res;});
     });
-    STATE.updatedAt=data.updated_at;
     const d=new Date(data.updated_at);
-    status.textContent=`Sync: ${d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})} ${d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}`;
+    status.textContent='Sync: '+d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
     renderRanking();
     if(document.getElementById('palpites').classList.contains('active'))renderPalpites();
     if(document.getElementById('resultados').classList.contains('active'))renderResultados();
@@ -321,9 +314,7 @@ async function syncResultados(manual=false){
     status.textContent='Dados locais';
     if(manual)toast('Sem conexão — dados locais','error');
     renderRanking();
-  }finally{
-    btn.disabled=false;btn.textContent='⟳ Atualizar';
-  }
+  }finally{btn.disabled=false;btn.textContent='⟳ Atualizar';}
 }
 
 function resJogo(g1,g2){return g1>g2?'h':g1<g2?'a':'d';}
@@ -357,23 +348,22 @@ function renderRanking(){
       <td class="num-cell">${s.acertosE}</td>
       <td class="pts-cell"><div class="bar-wrap"><div class="mini-bar"><div class="mini-fill" style="width:${Math.round(s.total/maxPts*100)}%"></div></div>${s.total}</div></td>
     </tr>`).join('');
-
-  let totalJ=0,jogadosJ=0;
-  const counts={};
+  let totalJ=0,jogadosJ=0;const counts={};
   FASES.forEach(({id})=>{
     const jogos=getJogosFase(id);totalJ+=jogos.length;
     let n=0;jogos.forEach((_,i)=>{const r=STATE.resultados[id]?.[i];if(r&&r[0]!==null)n++;});
     jogadosJ+=n;counts[id]=n;
   });
   const pct=totalJ?Math.round(jogadosJ/totalJ*100):0;
-  document.getElementById('prog-label').textContent=`Torneio — ${pct}% concluído`;
-  document.getElementById('prog-num').textContent=`${jogadosJ} / ${totalJ} jogos`;
+  document.getElementById('prog-label').textContent='Torneio — '+pct+'% concluído';
+  document.getElementById('prog-num').textContent=jogadosJ+' / '+totalJ+' jogos';
   document.getElementById('prog-fill').style.width=pct+'%';
   document.getElementById('metrics').innerHTML=`
     <div class="metric"><div class="val">${scores[0].total}</div><div class="lbl">Líder: ${scores[0].p}</div></div>
     <div class="metric"><div class="val">${counts['fase1']||0}/72</div><div class="lbl">Grupos</div></div>
     <div class="metric"><div class="val">${counts['dezesseis']||0}/16</div><div class="lbl">1/16</div></div>
-    <div class="metric"><div class="val">${counts['oitavas']||0}/8</div><div class="lbl">Oitavas</div></div>`;
+    <div class="metric"><div class="val">${counts['oitavas']||0}/8</div><div class="lbl">Oitavas</div></div>
+    <div class="metric"><div class="val">${counts['quartas']||0}/4</div><div class="lbl">Quartas</div></div>`;
 }
 
 function renderPhPills(){
@@ -385,8 +375,7 @@ function renderPhPills(){
 function selecionarFase(id,el){
   faseSelecionada=id;
   document.querySelectorAll('.phase-pill').forEach(p=>p.classList.remove('active'));
-  el.classList.add('active');
-  renderResultados();
+  el.classList.add('active');renderResultados();
 }
 
 function renderResultados(){
@@ -397,23 +386,20 @@ function renderResultados(){
   let html='<div class="game-block">',curG='';
   jogos.forEach((j,idx)=>{
     if(faseSelecionada==='fase1'&&j.g!==curG){
-      if(curG)html+=`</div><div class="game-block">`;
-      curG=j.g;html+=`<div class="group-hdr">${gLabels[j.g]}</div>`;
+      if(curG)html+='</div><div class="game-block">';
+      curG=j.g;html+='<div class="group-hdr">'+gLabels[j.g]+'</div>';
     }
     const res=STATE.resultados[faseSelecionada]?.[idx]||[null,null];
     const v1=res[0]!==null?res[0]:'';const v2=res[1]!==null?res[1]:'';
-    const dataStr=j.data?`<div class="game-auto">${j.data}</div>`:'';
-    html+=`<div class="game-row">
-      <div><div class="game-name">${j.t1} <span style="color:var(--text3)">×</span> ${j.t2}</div>${dataStr}</div>
-      <div class="score-inputs">
-        <input type="number" min="0" max="30" id="r_${faseSelecionada}_${idx}_1" value="${v1}" placeholder="—">
-        <span class="sep">×</span>
-        <input type="number" min="0" max="30" id="r_${faseSelecionada}_${idx}_2" value="${v2}" placeholder="—">
-      </div></div>`;
+    const dataStr=j.data?'<div class="game-auto">'+j.data+'</div>':'';
+    html+='<div class="game-row"><div><div class="game-name">'+j.t1+' <span style="color:var(--text3)">×</span> '+j.t2+'</div>'+dataStr+'</div>'
+      +'<div class="score-inputs"><input type="number" min="0" max="30" id="r_'+faseSelecionada+'_'+idx+'_1" value="'+v1+'" placeholder="—">'
+      +'<span class="sep">×</span>'
+      +'<input type="number" min="0" max="30" id="r_'+faseSelecionada+'_'+idx+'_2" value="'+v2+'" placeholder="—"></div></div>';
   });
-  html+=`</div>`;
-  if(fase.penalti)html+=`<div class="penalty-note">⚠️ Inserir placar de tempo normal + prorrogação. Pênaltis não contam para placar exato.</div>`;
-  html+=`<button class="save-btn" onclick="salvarResultados()">💾 Salvar e recalcular</button>`;
+  html+='</div>';
+  if(fase.penalti)html+='<div class="penalty-note">⚠️ Inserir placar de tempo normal + prorrogação. Pênaltis não contam para placar exato.</div>';
+  html+='<button class="save-btn" onclick="salvarResultados()">💾 Salvar e recalcular</button>';
   document.getElementById('resultados-content').innerHTML=html;
 }
 
@@ -422,44 +408,42 @@ function salvarResultados(){
   const ov=loadLocalOverrides();
   if(!ov[faseSelecionada])ov[faseSelecionada]={};
   jogos.forEach((_,idx)=>{
-    const v1=document.getElementById(`r_${faseSelecionada}_${idx}_1`)?.value.trim();
-    const v2=document.getElementById(`r_${faseSelecionada}_${idx}_2`)?.value.trim();
+    const v1=document.getElementById('r_'+faseSelecionada+'_'+idx+'_1')?.value.trim();
+    const v2=document.getElementById('r_'+faseSelecionada+'_'+idx+'_2')?.value.trim();
     if(v1!==''&&v2!==''&&!isNaN(+v1)&&!isNaN(+v2)){
       STATE.resultados[faseSelecionada][idx]=[+v1,+v2];
       ov[faseSelecionada][idx]=[+v1,+v2];
     }
   });
-  saveLocalOverrides(ov);
-  renderRanking();
-  if(faseSelecionada==='resultados')renderResultados();
+  saveLocalOverrides(ov);renderRanking();
   toast('Salvo! Ranking atualizado.','success');
 }
 
 function renderPalpites(){
   const p=document.getElementById('part-select').value;
-  let html='';
   const faseLabels={fase1:'Fase de Grupos (×1)',dezesseis:'1/16 avos (×2)',oitavas:'Oitavas (×3)',quartas:'Quartas (×4)',semi:'Semifinais (×4)',terceiro:'3º Lugar (×5)',final:'Final (×5)'};
+  let html='';
   FASES.forEach(({id,peso})=>{
     const jogos=getJogosFase(id);
-    const temPalpites=id==='fase1'?true:id==='dezesseis'?true:id==='oitavas'?true:
-      !!((PALPITES_FUTUROS[id]||{})[p]?.length);
-    if(!temPalpites)return;
-    html+=`<div class="fase-hdr">${faseLabels[id]}</div>`;
-    html+=`<table class="palpite-table"><thead><tr><th>Jogo</th><th>Palpite</th><th>Resultado</th><th>Status</th><th>Pts</th></tr></thead><tbody>`;
+    const temPalp=id==='fase1'||id==='dezesseis'||id==='oitavas'||id==='quartas'
+      ?true:!!((PALPITES_FUTUROS[id]||{})[p]?.length);
+    if(!temPalp)return;
+    html+='<div class="fase-hdr">'+faseLabels[id]+'</div>';
+    html+='<table class="palpite-table"><thead><tr><th>Jogo</th><th>Palpite</th><th>Resultado</th><th>Status</th><th>Pts</th></tr></thead><tbody>';
     let curG='';
     jogos.forEach((j,idx)=>{
       if(id==='fase1'&&j.g!==curG){
         curG=j.g;
-        html+=`<tr><td colspan="5" style="padding:6px 11px;background:var(--surface2);font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;border-top:1px solid var(--border)">Grupo ${j.g}</td></tr>`;
+        html+='<tr><td colspan="5" style="padding:6px 11px;background:var(--surface2);font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;border-top:1px solid var(--border)">Grupo '+j.g+'</td></tr>';
       }
       const palp=getPalpites(p,id,idx);
       const res=STATE.resultados[id]?.[idx];
       const{badge,pts}=calcBadge(palp,res,peso);
-      const pStr=palp&&palp[0]!==null&&palp[1]!==null?`${palp[0]} × ${palp[1]}`:'<span style="color:var(--text3)">?</span>';
-      const rStr=res&&res[0]!==null?`${res[0]} × ${res[1]}`:'—';
-      html+=`<tr><td>${j.t1} × ${j.t2}</td><td style="font-weight:600">${pStr}</td><td style="color:var(--text2)">${rStr}</td><td>${badge}</td><td style="color:var(--gold);font-weight:600">${pts}</td></tr>`;
+      const pStr=palp&&palp[0]!==null&&palp[1]!==null?palp[0]+' × '+palp[1]:'<span style="color:var(--text3)">?</span>';
+      const rStr=res&&res[0]!==null?res[0]+' × '+res[1]:'—';
+      html+='<tr><td>'+j.t1+' × '+j.t2+'</td><td style="font-weight:600">'+pStr+'</td><td style="color:var(--text2)">'+rStr+'</td><td>'+badge+'</td><td style="color:var(--gold);font-weight:600">'+pts+'</td></tr>';
     });
-    html+=`</tbody></table>`;
+    html+='</tbody></table>';
   });
   document.getElementById('palpites-content').innerHTML=html;
 }
@@ -467,8 +451,8 @@ function renderPalpites(){
 function calcBadge(palp,res,peso){
   if(!palp||palp[0]===null||palp[1]===null)return{badge:'<span class="badge pending">—</span>',pts:''};
   if(!res||res[0]===null)return{badge:'<span class="badge pending">Pendente</span>',pts:''};
-  if(res[0]===palp[0]&&res[1]===palp[1])return{badge:'<span class="badge exact">Placar exato</span>',pts:`+${3*peso}`};
-  if(resJogo(res[0],res[1])===resJogo(palp[0],palp[1]))return{badge:'<span class="badge result">Resultado</span>',pts:`+${1*peso}`};
+  if(res[0]===palp[0]&&res[1]===palp[1])return{badge:'<span class="badge exact">Placar exato</span>',pts:'+'+3*peso};
+  if(resJogo(res[0],res[1])===resJogo(palp[0],palp[1]))return{badge:'<span class="badge result">Resultado</span>',pts:'+'+1*peso};
   return{badge:'<span class="badge miss">Errou</span>',pts:'0'};
 }
 
@@ -486,7 +470,7 @@ function toast(msg,type){
   setTimeout(()=>t.classList.remove('show'),3000);
 }
 
-renderRanking(); 
+renderRanking();
 syncResultados(false);
 </script>
 </body>
