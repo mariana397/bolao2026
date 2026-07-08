@@ -84,7 +84,12 @@ JOGOS_OITAVAS = [
 ]
 
 # Quartas, semi, terceiro, final: adicionar times quando definidos
-JOGOS_QUARTAS  = []
+JOGOS_QUARTAS = [
+    {"t1":"França","t2":"Marrocos"},
+    {"t1":"Espanha","t2":"Bélgica"},
+    {"t1":"Noruega","t2":"Inglaterra"},
+    {"t1":"Argentina","t2":"Suíça"},
+]
 JOGOS_SEMI     = []
 JOGOS_TERCEIRO = []
 JOGOS_FINAL    = []
@@ -231,3 +236,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
