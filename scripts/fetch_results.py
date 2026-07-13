@@ -22,8 +22,7 @@ NAME_MAP = {
     "dr congo":"RD Congo","congo dr":"RD Congo","democratic republic of congo":"RD Congo",
     "congo":"RD Congo","uzbekistan":"Uzbequistão","colombia":"Colômbia",
     "england":"Inglaterra","croatia":"Croácia","ghana":"Gana","panama":"Panamá",
-    # nomes que a API retorna em português
-    "holanda":"Holanda","paises baixos":"Países Baixos",
+    "holanda":"Holanda",
 }
 
 JOGOS_GRUPOS = [
@@ -83,14 +82,16 @@ JOGOS_OITAVAS = [
     {"t1":"Argentina","t2":"Egito"},{"t1":"Suíça","t2":"Colômbia"},
 ]
 
-# Quartas, semi, terceiro, final: adicionar times quando definidos
 JOGOS_QUARTAS = [
     {"t1":"França","t2":"Marrocos"},
     {"t1":"Espanha","t2":"Bélgica"},
     {"t1":"Noruega","t2":"Inglaterra"},
     {"t1":"Argentina","t2":"Suíça"},
 ]
-JOGOS_SEMI     = []
+JOGOS_SEMI = [
+    {"t1":"França","t2":"Espanha"},
+    {"t1":"Inglaterra","t2":"Argentina"},
+]
 JOGOS_TERCEIRO = []
 JOGOS_FINAL    = []
 
@@ -139,7 +140,6 @@ def find_in_list(jogos, t1, t2):
 
 def main():
     os.makedirs("data", exist_ok=True)
-    # Carrega existente mas LIMPA entradas no formato errado (dict com t1/t2/g1/g2)
     existing = {}
     try:
         with open("data/results.json","r",encoding="utf-8") as f:
@@ -147,10 +147,8 @@ def main():
         for fase, jogos in raw.items():
             existing[fase] = {}
             for k, v in jogos.items():
-                # só mantém entradas no formato correto [g1, g2]
                 if isinstance(v, list) and len(v)==2:
                     existing[fase][k] = v
-                # descarta entradas no formato {"t1":...,"t2":...,"g1":...,"g2":...}
     except Exception:
         pass
 
@@ -189,9 +187,6 @@ def main():
                     ext = score.get("extraTime",{})
                     g1 = (reg.get("home") or 0) + (ext.get("home") or 0)
                     g2 = (reg.get("away") or 0) + (ext.get("away") or 0)
-                elif duration == "EXTRA_TIME":
-                    ft = score.get("fullTime",{})
-                    g1,g2 = ft.get("home"),ft.get("away")
                 else:
                     ft = score.get("fullTime",{})
                     g1,g2 = ft.get("home"),ft.get("away")
@@ -236,4 +231,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
