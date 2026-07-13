@@ -138,9 +138,9 @@ const FASES=[
   {id:'dezesseis',label:'1/16',     peso:2, penalti:true},
   {id:'oitavas',  label:'Oitavas',  peso:3, penalti:true},
   {id:'quartas',  label:'Quartas',  peso:4, penalti:true},
-  {id:'semi',     label:'Semi',     peso:4, penalti:true},
-  {id:'terceiro', label:'3º Lugar', peso:5, penalti:false},
-  {id:'final',    label:'Final',    peso:5, penalti:true},
+  {id:'semi',     label:'Semi',     peso:5, penalti:true},
+  {id:'terceiro', label:'3º Lugar', peso:6, penalti:false},
+  {id:'final',    label:'Final',    peso:6, penalti:true},
 ];
 const JOGOS_GRUPOS=[
   {g:'A',t1:'México',t2:'África do Sul'},{g:'A',t1:'Coreia do Sul',t2:'Rep. Tcheca'},
@@ -215,8 +215,8 @@ const JOGOS_QUARTAS=[
   {t1:'Argentina',t2:'Suíça',data:'11/7 22h Kansas City'},
 ];
 const JOGOS_SEMI=[
-  {t1:'A definir',t2:'A definir',data:'14/7 16h Dallas'},
-  {t1:'A definir',t2:'A definir',data:'15/7 16h Atlanta'},
+  {t1:'França',t2:'Espanha',data:'14/7 16h Dallas'},
+  {t1:'Inglaterra',t2:'Argentina',data:'15/7 16h Atlanta'},
 ];
 const JOGOS_TERCEIRO=[{t1:'A definir',t2:'A definir',data:'18/7 18h Miami'}];
 const JOGOS_FINAL=[{t1:'A definir',t2:'A definir',data:'19/7 16h East Rutherford'}];
@@ -265,7 +265,14 @@ const PALPITES_QUARTAS={
   Mãe:    [[3,1],[2,0],[1,2],[3,0]],
 };
 const PALPITES_FUTUROS={
-  semi:    {Claudia:[],Roberta:[],Pati:[],Caru:[],Mari:[],Mãe:[]},
+  semi:    {
+    Claudia:[[2,1],[2,1]],
+    Roberta:[[2,1],[2,1]],
+    Pati:   [[3,1],[2,2]],
+    Caru:   [[2,1],[1,3]],
+    Mari:   [[2,2],[2,3]],
+    Mãe:    [[2,1],[2,1]],
+  },
   terceiro:{Claudia:[],Roberta:[],Pati:[],Caru:[],Mari:[],Mãe:[]},
   final:   {Claudia:[],Roberta:[],Pati:[],Caru:[],Mari:[],Mãe:[]},
 };
@@ -360,10 +367,10 @@ function renderRanking(){
   document.getElementById('prog-fill').style.width=pct+'%';
   document.getElementById('metrics').innerHTML=`
     <div class="metric"><div class="val">${scores[0].total}</div><div class="lbl">Líder: ${scores[0].p}</div></div>
-    <div class="metric"><div class="val">${counts['fase1']||0}/72</div><div class="lbl">Grupos</div></div>
-    <div class="metric"><div class="val">${counts['dezesseis']||0}/16</div><div class="lbl">1/16</div></div>
     <div class="metric"><div class="val">${counts['oitavas']||0}/8</div><div class="lbl">Oitavas</div></div>
-    <div class="metric"><div class="val">${counts['quartas']||0}/4</div><div class="lbl">Quartas</div></div>`;
+    <div class="metric"><div class="val">${counts['quartas']||0}/4</div><div class="lbl">Quartas</div></div>
+    <div class="metric"><div class="val">${counts['semi']||0}/2</div><div class="lbl">Semi ×5</div></div>
+    <div class="metric"><div class="val">${counts['final']||0}/1</div><div class="lbl">Final ×6</div></div>`;
 }
 
 function renderPhPills(){
@@ -421,7 +428,7 @@ function salvarResultados(){
 
 function renderPalpites(){
   const p=document.getElementById('part-select').value;
-  const faseLabels={fase1:'Fase de Grupos (×1)',dezesseis:'1/16 avos (×2)',oitavas:'Oitavas (×3)',quartas:'Quartas (×4)',semi:'Semifinais (×4)',terceiro:'3º Lugar (×5)',final:'Final (×5)'};
+  const faseLabels={fase1:'Fase de Grupos (×1)',dezesseis:'1/16 avos (×2)',oitavas:'Oitavas (×3)',quartas:'Quartas (×4)',semi:'Semifinais (×5)',terceiro:'3º Lugar (×6)',final:'Final (×6)'};
   let html='';
   FASES.forEach(({id,peso})=>{
     const jogos=getJogosFase(id);
