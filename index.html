@@ -218,8 +218,8 @@ const JOGOS_SEMI=[
   {t1:'França',t2:'Espanha',data:'14/7 16h Dallas'},
   {t1:'Inglaterra',t2:'Argentina',data:'15/7 16h Atlanta'},
 ];
-const JOGOS_TERCEIRO=[{t1:'A definir',t2:'A definir',data:'18/7 18h Miami'}];
-const JOGOS_FINAL=[{t1:'A definir',t2:'A definir',data:'19/7 16h East Rutherford'}];
+const JOGOS_TERCEIRO=[{t1:'França',t2:'Inglaterra',data:'18/7 18h Miami'}];
+const JOGOS_FINAL=[{t1:'Espanha',t2:'Argentina',data:'19/7 16h East Rutherford'}];
 
 function getJogosFase(id){
   if(id==='fase1')return JOGOS_GRUPOS;
@@ -273,8 +273,22 @@ const PALPITES_FUTUROS={
     Mari:   [[2,2],[2,3]],
     Mãe:    [[2,1],[2,1]],
   },
-  terceiro:{Claudia:[],Roberta:[],Pati:[],Caru:[],Mari:[],Mãe:[]},
-  final:   {Claudia:[],Roberta:[],Pati:[],Caru:[],Mari:[],Mãe:[]},
+  terceiro:{
+    Claudia:[[2,1]],
+    Roberta:[[2,0]],
+    Pati:   [[2,1]],
+    Caru:   [[2,2]],
+    Mari:   [[3,1]],
+    Mãe:    [[3,1]],
+  },
+  final:   {
+    Claudia:[[3,2]],
+    Roberta:[[1,3]],
+    Pati:   [[2,2]],
+    Caru:   [[2,3]],
+    Mari:   [[2,2]],
+    Mãe:    [[2,1]],
+  },
 };
 
 function getPalpites(p,faseId,idx){
