@@ -92,8 +92,12 @@ JOGOS_SEMI = [
     {"t1":"França","t2":"Espanha"},
     {"t1":"Inglaterra","t2":"Argentina"},
 ]
-JOGOS_TERCEIRO = []
-JOGOS_FINAL    = []
+JOGOS_TERCEIRO = [
+    {"t1":"França","t2":"Inglaterra"},
+]
+JOGOS_FINAL    = [
+    {"t1":"Espanha","t2":"Argentina"},
+]
 
 JOGOS_POR_FASE = {
     "dezesseis": JOGOS_DEZESSEIS,
@@ -226,8 +230,4 @@ def main():
             print("API erro: "+str(e))
 
     with open("data/results.json","w",encoding="utf-8") as f:
-        json.dump({"resultados":results,"updated_at":datetime.datetime.now(datetime.timezone.utc).isoformat()},f,ensure_ascii=False,indent=2)
-    print("results.json atualizado!")
-
-if __name__ == "__main__":
-    main()
+        json.dump({"resultados":results,"updated_at":datetime.datetime.now(datetime.timezone.utc).isoformat()},f,ensure_ascii=False,indent=
